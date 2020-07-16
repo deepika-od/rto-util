@@ -595,12 +595,21 @@ public class PayloadUtil {
 	public String getOrderDate(String json) {
 		
 		String returnValue = "";
+		boolean fail = false;
+		
 		try {
 			JSONObject jsonObject = new JSONObject(json);
+
 			returnValue = jsonObject.getJSONObject(KEY_ORDER_HEADER).getString(KEY_ORDERDATE).trim();
+
 		} catch (Exception e) {
+			fail = true;
+		}
+		
+		if ((fail) || (returnValue == null || returnValue.trim().length() < 7) ) {
 			returnValue = "9999-99-99";
 		}
+
 		
 		return returnValue;
 	}
