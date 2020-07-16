@@ -128,7 +128,7 @@ public class PayloadUtil {
 	String KEY_LOYALTYID = "loyaltyId";
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd.HH.mm:ss.SSSSSS";
-
+	public final String BAD_DATE_SUBSTITUTE = "9999-01-01";
 	
 	public String getSmallPayload(String json){
 		
@@ -607,7 +607,7 @@ public class PayloadUtil {
 		}
 		
 		if ((fail) || (returnValue == null || returnValue.trim().length() < 7) ) {
-			returnValue = "9999-99-99";
+			returnValue = BAD_DATE_SUBSTITUTE;
 		}
 
 		
