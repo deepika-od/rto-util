@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-	<parent>
+  	<parent>
 		<artifactId>basepom</artifactId>
 		<groupId>com.officedepot.pom</groupId>
 		<version>1.0.4</version>
@@ -15,8 +15,8 @@
 	<properties>
 		<archaius.version>0.7.1</archaius.version>
 		<core.version>1.5.5-SNAPSHOT</core.version>
-		<spring.boot.version>1.5.8.RELEASE</spring.boot.version>
-		<spring.version>4.3.12.RELEASE</spring.version>
+<!-- 		<spring.boot.version>1.5.8.RELEASE</spring.boot.version>
+		<spring.version>4.3.12.RELEASE</spring.version> -->
 		<junit.version>4.12</junit.version>
 		<jcl-slf4j.version>1.7.25</jcl-slf4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,12 +39,6 @@
 			<version>${jcl-slf4j.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.netflix.archaius</groupId>
-			<artifactId>archaius-core</artifactId>
-			<version>${archaius.version}</version>
-		</dependency>
-				
 		<dependency>
 		  <groupId>com.officedepot.services.connectors</groupId>
 		  <artifactId>elasticsearch-connector</artifactId>
@@ -87,71 +81,9 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${jcl-slf4j.version}</version>
 		</dependency>
-
-		<!-- Spring Boot -->
-		<dependency>
-            <!-- Import dependency management from Spring Boot -->
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-dependencies</artifactId>
-            <version>${spring.boot.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-actuator</artifactId>
-		    <version>${spring.boot.version}</version>
-		</dependency>
-        <dependency>
-			<groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-tomcat</artifactId>
-	        <version>${spring.boot.version}</version>
-	        <scope>provided</scope>
-        </dependency> 
-  
-  		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
-		
-		<!-- Service Core -->
-		<dependency>
-			<groupId>com.officedepot.coreservice</groupId>
-			<artifactId>service-core</artifactId>
-			<version>${core.version}</version>
-		</dependency>
-		<!-- Service Core Model -->
-		<dependency>
-			<groupId>com.officedepot.coreservice</groupId>
-			<artifactId>service-core-model</artifactId>
-			<version>${core.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.officedepot.coreservice</groupId>
-			<artifactId>service-core-base</artifactId>
-			<version>${core.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.prometheus</groupId>
-			<artifactId>simpleclient_spring_boot</artifactId>
-			<version>${prometheus.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.prometheus</groupId>
-		    <artifactId>simpleclient_servlet</artifactId>
-		    <version>${prometheus.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.prometheus</groupId>
-		    <artifactId>simpleclient_hotspot</artifactId>
-		    <version>${prometheus.version}</version>
-		</dependency>
 		
 		<!-- unit tests -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<version>${spring.boot.version}</version>
@@ -162,7 +94,7 @@
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency> -->
 		
 		<!-- integration test dependencies -->
 		<dependency>
