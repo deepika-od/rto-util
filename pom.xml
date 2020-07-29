@@ -75,12 +75,6 @@
 		    <version>1.11.263</version>
 		</dependency>
 	
-		<!-- move apache commons logging to logback -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${jcl-slf4j.version}</version>
-		</dependency>
 		
 		<!-- unit tests -->
 <!-- 		<dependency>
@@ -159,11 +153,6 @@
 		    <version>2.9.3</version>
 		</dependency>
 
-		<dependency>
-		  <groupId>com.officedepot.services.connectors</groupId>
-		  <artifactId>kinesis-connector</artifactId>
-		  <version>0.0.2-SNAPSHOT</version>
-		</dependency>  
 		
 		<dependency>
 			<groupId>com.officedepot.services.client</groupId>
