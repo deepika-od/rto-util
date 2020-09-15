@@ -226,30 +226,7 @@ public class PayloadUtil {
 
 		return jsonObject.toString();
 	}
-			
-	public String createJSONWithMETAData(String json, String successLevel, String code, String message){
-		
-		String METADATA_LEVEL_METADATA = "metaData";
-		String METADATA_LEVEL_ENRICH = "RTTDataEnrichment";
 
-		String METADATA_FIELD_CODE = "code";
-		String METADATA_FIELD_MESSAGE = "message";
-		String METADATA_FIELD_SUCCESSLEVEL = "successLevel";
-		
-		JSONObject jsonObject1 = new JSONObject();
-		jsonObject1.put(METADATA_FIELD_SUCCESSLEVEL, successLevel);
-		jsonObject1.put(METADATA_FIELD_CODE, code);
-		jsonObject1.put(METADATA_FIELD_MESSAGE, message);
-		
-		JSONObject jsonObject2 = new JSONObject();
-		jsonObject2.put(METADATA_LEVEL_ENRICH, jsonObject1);
-		
-		JSONObject jsonObject = new JSONObject(json);
-		jsonObject.put(METADATA_LEVEL_METADATA, jsonObject2);
-
-		return jsonObject.toString();
-	}
-	
 	public String createJSONWithEventInfo(String event, String destinationKey, String key){
 		
 		JSONObject jsonObject1 = new JSONObject();
