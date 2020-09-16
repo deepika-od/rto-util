@@ -307,10 +307,15 @@ public class PayloadUtil {
 	
 	public String getMasterRecordSuffix(String recordJson) {
 		String indexSuffix = "";
+		String date = "";
 		
-		String orderDate = new PayloadUtil().getOrderDate(recordJson);
+		if (isDTS(recordJson)) {
+			date = getScanDate(recordJson);
+		} else {
+			date = getOrderDate(recordJson);
+		}
 		
-		indexSuffix = indexSuffix + orderDate.substring(0, 4);
+		indexSuffix = indexSuffix + date.substring(0, 4);
 		
 		logger.debug("getMasterRecordSuffix: " + indexSuffix);
 		
@@ -591,6 +596,27 @@ public class PayloadUtil {
 		return returnValue;
 	}
 	
+	public String getScanDate(String json) {
+		
+		String returnValue = "";
+		boolean fail = false;
+		
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+
+			returnValue = jsonObject.getJSONObject(KEY_DTS_EVENT).getString(KEY_DTS_EVENT_SCANTIMESTAMP).trim();
+
+		} catch (Exception e) {
+			fail = true;
+		}
+		
+		if ((fail) || (returnValue == null || returnValue.trim().length() < 7) ) {
+			returnValue = BAD_DATE_SUBSTITUTE;
+		}
+
+		
+		return returnValue;
+	}
 	
 //	public String getSentTimestamp(String json) {
 //		JSONObject jsonObject = new JSONObject(json);

@@ -190,53 +190,6 @@ public class PayloadUtilDeprecated {
 
 	
 	
-	public String createPayloadForDestinationKey(String json, String destinationKey){
-		
-		String returnJSON = json;
-				
-		if (destinationKey.equalsIgnoreCase(VALUE_DESTINATION_KEY_WARP)) {
-
-			ElasticsearchUtilDeprecated elasticUtil = new ElasticsearchUtilDeprecated();
-
-			String id = getMasterIndexIdByOrderField(json, KEY_THIRD_PARTY_ORDER, VALUE_DESTINATION_KEY_WARP.toUpperCase());
-			String docType = "_doc";	
-			String indexName = elasticUtil.getMasterIndexName(getMasterRecordSuffix(json));
-			
-			JSONObject jsonObject = new JSONObject("{}");
-			jsonObject.put(KEY_RECORD_ID, id);
-			jsonObject.put(KEY_RECORD_DOC_TYPE, docType);
-			jsonObject.put(KEY_RECORD_INDEX_NAME, indexName);
-			
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::KEY_RECORD_ID = " + id);
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::KEY_RECORD_DOC_TYPE = " + docType);
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::KEY_RECORD_INDEX_NAME = " + indexName);
-			
-			returnJSON = jsonObject.toString();
-			
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::returnJSON = " + returnJSON);
-			
-		}
-		
-		return returnJSON;
-	}	
-	
-	public String getMasterRecordSuffix(String recordJson) {
-		String indexSuffix = "";
-		
-		String orderDate = new PayloadUtilDeprecated().getOrderDate(recordJson);
-		
-		indexSuffix = indexSuffix + orderDate.substring(0, 4);
-		
-		logger.debug("getMasterRecordSuffix: " + indexSuffix);
-		
-		String custCustomerTypeSuffix = getIndexNamePrefixForCustCustomerType(recordJson);
-		indexSuffix = custCustomerTypeSuffix + "_" + indexSuffix;
-		
-		return indexSuffix;
-		
-	}
-	
-	
 	public String incrementProcessCountInJSON(String json){
 		JSONObject jsonObject = new JSONObject(json);
 		

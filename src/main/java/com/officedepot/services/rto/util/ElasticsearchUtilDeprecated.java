@@ -107,16 +107,6 @@ public class ElasticsearchUtilDeprecated {
 		}		
 	}
 	
-	public String getMasterIndexName(String indexSuffix) {
-		String ret = "";
-		if (ES_ORDER_MASTER_INDEX_ENABLED){
-			
-			logger.debug("ElasticsearchUtil::getMasterIndexName ...: " + ES_ORDER_MASTER_INDEX + indexSuffix);		
-			ret = ES_ORDER_MASTER_INDEX + indexSuffix;
-		}
-		return ret;
-	}
-	
 	
 	public void writeInboundToElasticsearchIndex(String json){
 		writeInboundToElasticsearchIndex(json, "");
