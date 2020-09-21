@@ -307,15 +307,15 @@ public class PayloadUtil {
 	
 	public String getMasterRecordSuffix(String recordJson) {
 		String indexSuffix = "";
-		String date = "";
+		String dateSuffix = "";
 		
 		if (isDTS(recordJson)) {
-			date = getScanDate(recordJson);
+			dateSuffix = getScanDate(recordJson);
 		} else {
-			date = getOrderDate(recordJson);
+			dateSuffix = getOrderDate(recordJson);
 		}
 		
-		indexSuffix = indexSuffix + date.substring(0, 4);
+		indexSuffix = indexSuffix + dateSuffix.substring(0, 4);
 		
 		logger.debug("getMasterRecordSuffix: " + indexSuffix);
 		
