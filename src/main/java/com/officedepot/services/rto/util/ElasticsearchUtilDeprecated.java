@@ -30,17 +30,18 @@ public class ElasticsearchUtilDeprecated {
 	private static String ES_TYPE;
 	
 	public ElasticsearchUtilDeprecated(){
-		init();
+		init(); 
 	}
 
 	
 	public void writeDeadLetterToElasticsearchIndex(String msg, String json){
 		
 		logger.error(CLASS_NAME + "writeDeadLetterToElasticsearchIndex" + METHOD_MESSAGE + ES_DEADLETTER_INDEX);
-		PayloadUtilDeprecated payloadUtil = new PayloadUtilDeprecated();
+		PayloadUtil payloadUtil = new PayloadUtil();
+		PayloadUtilDeprecated payloadUtilDeprecated = new PayloadUtilDeprecated();
 		
 		if ((ES_DEADLETTER_INDEX_ENABLED) 
-				&& !payloadUtil.hasJsonValue( json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_DEADLETTERRETRYSOURCE, payloadUtil.VALUE_DEADLETTERRETRYSOURCE)){
+				&& !payloadUtilDeprecated.hasJsonValue( json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_DEADLETTERRETRYSOURCE, payloadUtil.VALUE_DEADLETTERRETRYSOURCE)){
 			
 			try {
 				
@@ -66,7 +67,7 @@ public class ElasticsearchUtilDeprecated {
 		if (ES_NOTIFY_RESPONSE_INDEX_ENABLED){
 			logger.debug(CLASS_NAME + "writeNotifyResponserToElasticsearchIndex:ES_NOTIFY_RESPONSE_INDEX_ENABLED");
 			try {
-				PayloadUtilDeprecated payloadUtil = new PayloadUtilDeprecated();
+				PayloadUtil payloadUtil = new PayloadUtil();
 				
 				json = payloadUtil.addKeyValueToJSON(json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_PROCESS_MESSAGE, msg );
 				json = payloadUtil.addKeyValueToJSON(json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_PROCESS_NOTIFY_RESPONES_TIME, time );
@@ -106,16 +107,6 @@ public class ElasticsearchUtilDeprecated {
 		}		
 	}
 	
-	public String getMasterIndexName(String indexSuffix) {
-		String ret = "";
-		if (ES_ORDER_MASTER_INDEX_ENABLED){
-			
-			logger.debug("ElasticsearchUtil::getMasterIndexName ...: " + ES_ORDER_MASTER_INDEX + indexSuffix);		
-			ret = ES_ORDER_MASTER_INDEX + indexSuffix;
-		}
-		return ret;
-	}
-	
 	
 	public void writeInboundToElasticsearchIndex(String json){
 		writeInboundToElasticsearchIndex(json, "");
@@ -140,8 +131,8 @@ public class ElasticsearchUtilDeprecated {
 		logger.error("#1 ElasticsearchUtil::writeErrorToElasticsearchIndex ... writing ERROR to elasticsearch INDEX: " + ES_ERROR_INDEX);
 		if (ES_ERROR_INDEX_ENABLED){
 			try {
-				
-				String json = new PayloadUtilDeprecated().addProcessMessageInJSON(errMessage);
+
+				String json = new PayloadUtil().addProcessMessageInJSON(errMessage);
 				
 				writeToElasticsearchIndexWithJSON(json, ES_ERROR_INDEX);
 				
@@ -160,7 +151,7 @@ public class ElasticsearchUtilDeprecated {
 		
 		if (ES_ERROR_INDEX_ENABLED){
 			
-			PayloadUtilDeprecated payloadUtil = new PayloadUtilDeprecated();
+			PayloadUtil payloadUtil = new PayloadUtil();
 			
 			try {
 				json = payloadUtil.addProcessMessageInJSON( msg, json);
@@ -180,9 +171,9 @@ public class ElasticsearchUtilDeprecated {
 
 	
 	private void writeToElasticsearchIndexWithJSON(String json, String index){
-		
+
 		String type = ES_TYPE;
-		json = new PayloadUtilDeprecated().addProcessTimeStampInJSON(json);
+		json = new PayloadUtil().addProcessTimeStampInJSON(json);
 		writeToElasticsearchIndex( json,  index,  type);
 		
 	}
@@ -190,7 +181,7 @@ public class ElasticsearchUtilDeprecated {
 	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index){
 		
 		String type = ES_TYPE;
-		json = new PayloadUtilDeprecated().addProcessTimeStampInJSON(json);
+		json = new PayloadUtil().addProcessTimeStampInJSON(json);
 		writeInboundMasterToElasticsearchIndex( json,  index,  type);
 		
 	}

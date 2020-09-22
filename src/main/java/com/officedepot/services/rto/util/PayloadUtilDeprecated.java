@@ -119,49 +119,6 @@ public class PayloadUtilDeprecated {
 	String KEY_LOYALTYID = "loyaltyId";
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd.HH.mm:ss.SSSSSS";
-
-	
-	public String getSmallPayload(String json){
-		
- 		String retJson = "";
-		JSONObject jsonObject = new JSONObject(json);
- 		
- 		retJson = jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).toString();
-		retJson = "{\"" + KEY_PAYLOAD_ATTRIBUTES + "\": " + retJson + ","
-				 + "\"" + KEY_ORDER_HEADER + "\": {}"
-				+ "}";
- 		
- 		logger.debug(CLASS_NAME + "::getSmallPayload::retJson = " + retJson);
- 		
- 		return retJson;
-	}
-	
-	public String addSmallOrderHeaderToJSON(String smallJSON, String orderJSON){
-
-		if (isJsonValuePresent(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER)){
-			String orderNumber = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER);
-			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER, orderNumber);
-		}
-		
-		if (isJsonValuePresent(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER)){
-			String orderNumber = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER);
-			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER, orderNumber);
-		}
-		
-		if (isJsonValuePresent(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER)){
-			String orderSubNumber = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER);
-			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER, orderSubNumber);
-		}
-
-		if(isJsonValuePresent( smallJSON, KEY_ORDER_HEADER, KEY_ACCOUNTID)){
-			String accountId = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ACCOUNTID);
-			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ACCOUNTID, accountId);
-		}
-	
- 		logger.debug(CLASS_NAME + "::getSmallOrderHeader::smallJSON = " + smallJSON);
-
- 		return smallJSON;
-	}
 	
 	public boolean isJsonValuePresent(String json, String levelKey, String key){
 		boolean ret = false;
@@ -232,94 +189,6 @@ public class PayloadUtilDeprecated {
 	}
 
 	
-	public String addProcessMessageInJSON(String msg){
-		
-		JSONObject jsonObject1 = new JSONObject();
-		jsonObject1.put(KEY_PROCESS_MESSAGE, msg);
-
-		JSONObject jsonObject2 = new JSONObject();
-		jsonObject2.put(KEY_PAYLOAD_ATTRIBUTES, jsonObject1);
-		
-		return jsonObject2.toString();
-	}
-	
-	
-	public String addProcessTimeStampInJSON(String json){
-		JSONObject jsonObject = new JSONObject(json);
-		
-		TimeZone.setDefault(TimeZone.getTimeZone("EST"));
-
-		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_TIMESTAMP, new SimpleDateFormat(DATE_FORMAT).format(new Date()));
-
-		return jsonObject.toString();
-	}	
-
-//	public String addRecordIDInJSON(String json){
-//		
-//		String id = new PayloadUtil().getMasterIndexId(json);
-//		
-//		JSONObject jsonObject = new JSONObject(json);
-//
-//		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_RECORD_ID, id);
-//
-//		return jsonObject.toString();
-//	}	
-	
-	
-	public String createPayloadForDestinationKey(String json, String destinationKey){
-		
-		String returnJSON = json;
-				
-		if (destinationKey.equalsIgnoreCase(VALUE_DESTINATION_KEY_WARP)) {
-
-			ElasticsearchUtilDeprecated elasticUtil = new ElasticsearchUtilDeprecated();
-
-			String id = getMasterIndexIdByOrderField(json, KEY_THIRD_PARTY_ORDER, VALUE_DESTINATION_KEY_WARP.toUpperCase());
-			String docType = "_doc";	
-			String indexName = elasticUtil.getMasterIndexName(getMasterRecordSuffix(json));
-			
-			JSONObject jsonObject = new JSONObject("{}");
-			jsonObject.put(KEY_RECORD_ID, id);
-			jsonObject.put(KEY_RECORD_DOC_TYPE, docType);
-			jsonObject.put(KEY_RECORD_INDEX_NAME, indexName);
-			
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::KEY_RECORD_ID = " + id);
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::KEY_RECORD_DOC_TYPE = " + docType);
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::KEY_RECORD_INDEX_NAME = " + indexName);
-			
-			returnJSON = jsonObject.toString();
-			
-			logger.debug(CLASS_NAME + "::createPayloadForDestinationKey::returnJSON = " + returnJSON);
-			
-		}
-		
-		return returnJSON;
-	}	
-	
-	public String getMasterRecordSuffix(String recordJson) {
-		String indexSuffix = "";
-		
-		String orderDate = new PayloadUtilDeprecated().getOrderDate(recordJson);
-		
-		indexSuffix = indexSuffix + orderDate.substring(0, 4);
-		
-		logger.debug("getMasterRecordSuffix: " + indexSuffix);
-		
-		String custCustomerTypeSuffix = getIndexNamePrefixForCustCustomerType(recordJson);
-		indexSuffix = custCustomerTypeSuffix + "_" + indexSuffix;
-		
-		return indexSuffix;
-		
-	}
-	
-	public String addProcessMessageInJSON(String msg, String json){
-		JSONObject jsonObject = new JSONObject(json);
-		
-		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_MESSAGE, msg);
-
-		return jsonObject.toString();
-	}
-	
 	
 	public String incrementProcessCountInJSON(String json){
 		JSONObject jsonObject = new JSONObject(json);
@@ -353,17 +222,6 @@ public class PayloadUtilDeprecated {
 		}
 		
 		return ret;
-	}
-	
-	public String addEventInJSON(String json, String eventName, String destinationKey){
-		
-		JSONObject jsonObject = new JSONObject(json);
-		
-		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_EVENT, eventName);
-		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_EVENT_DESTINATION_KEY, destinationKey);
-			
-		//logger.debug(jsonObject.toString());	
-		return jsonObject.toString();
 	}
 	
 	public Map<String, String> getDocumentIdentifiers(String json){

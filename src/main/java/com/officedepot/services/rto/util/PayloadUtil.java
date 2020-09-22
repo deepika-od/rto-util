@@ -226,30 +226,7 @@ public class PayloadUtil {
 
 		return jsonObject.toString();
 	}
-			
-	public String createJSONWithMETAData(String json, String successLevel, String code, String message){
-		
-		String METADATA_LEVEL_METADATA = "metaData";
-		String METADATA_LEVEL_ENRICH = "RTTDataEnrichment";
 
-		String METADATA_FIELD_CODE = "code";
-		String METADATA_FIELD_MESSAGE = "message";
-		String METADATA_FIELD_SUCCESSLEVEL = "successLevel";
-		
-		JSONObject jsonObject1 = new JSONObject();
-		jsonObject1.put(METADATA_FIELD_SUCCESSLEVEL, successLevel);
-		jsonObject1.put(METADATA_FIELD_CODE, code);
-		jsonObject1.put(METADATA_FIELD_MESSAGE, message);
-		
-		JSONObject jsonObject2 = new JSONObject();
-		jsonObject2.put(METADATA_LEVEL_ENRICH, jsonObject1);
-		
-		JSONObject jsonObject = new JSONObject(json);
-		jsonObject.put(METADATA_LEVEL_METADATA, jsonObject2);
-
-		return jsonObject.toString();
-	}
-	
 	public String createJSONWithEventInfo(String event, String destinationKey, String key){
 		
 		JSONObject jsonObject1 = new JSONObject();
@@ -330,10 +307,15 @@ public class PayloadUtil {
 	
 	public String getMasterRecordSuffix(String recordJson) {
 		String indexSuffix = "";
+		String dateSuffix = "";
 		
-		String orderDate = new PayloadUtil().getOrderDate(recordJson);
+		if (isDTS(recordJson)) {
+			dateSuffix = getScanDate(recordJson);
+		} else {
+			dateSuffix = getOrderDate(recordJson);
+		}
 		
-		indexSuffix = indexSuffix + orderDate.substring(0, 4);
+		indexSuffix = indexSuffix + dateSuffix.substring(0, 4);
 		
 		logger.debug("getMasterRecordSuffix: " + indexSuffix);
 		
@@ -614,6 +596,27 @@ public class PayloadUtil {
 		return returnValue;
 	}
 	
+	public String getScanDate(String json) {
+		
+		String returnValue = "";
+		boolean fail = false;
+		
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+
+			returnValue = jsonObject.getJSONObject(KEY_DTS_EVENT).getString(KEY_DTS_EVENT_SCANTIMESTAMP).trim();
+
+		} catch (Exception e) {
+			fail = true;
+		}
+		
+		if ((fail) || (returnValue == null || returnValue.trim().length() < 7) ) {
+			returnValue = BAD_DATE_SUBSTITUTE;
+		}
+
+		
+		return returnValue;
+	}
 	
 //	public String getSentTimestamp(String json) {
 //		JSONObject jsonObject = new JSONObject(json);
