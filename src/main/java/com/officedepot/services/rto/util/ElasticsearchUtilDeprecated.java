@@ -131,7 +131,7 @@ public class ElasticsearchUtilDeprecated {
 	public void writeLogToElasticsearchIndex(String json){
 		if (ES_LOG_INDEX_ENABLED){
 			logger.debug("ElasticsearchUtil::writeLogToElasticsearchIndex ... writing record to elasticsearch: " + ES_LOG_INDEX);		
-			writeToElasticsearchIndexWithJSON(json, ES_LOG_INDEX);
+			writeLogToElasticsearchIndexWithJSON(json, ES_LOG_INDEX);
 		}
 	}
 	
@@ -178,6 +178,13 @@ public class ElasticsearchUtilDeprecated {
 		}
 	}
 
+	private void writeLogToElasticsearchIndexWithJSON(String json, String index){
+
+		String type = ES_TYPE;
+		json = new PayloadUtil().addTimeStampInJSON(json);
+		writeToElasticsearchIndex( json,  index,  type);
+		
+	}	
 	
 	private void writeToElasticsearchIndexWithJSON(String json, String index){
 
@@ -245,6 +252,7 @@ public class ElasticsearchUtilDeprecated {
 			ES_EVENT_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.event.enabled");
 			ES_DEADLETTER_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.deadletter.enabled");
 			ES_NOTIFY_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.notify.enabled");
+			ES_LOG_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.log.enabled");
 			ES_NOTIFY_RESPONSE_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.notify.response.enabled");
 			ES_ORDER_MASTER_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.order.master.enabled");
 			

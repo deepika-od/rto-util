@@ -76,6 +76,7 @@ public class PayloadUtil {
 	//public String KEY_EXTORDERNUMBER ="extOrdNumber";
 	public String KEY_THIRD_PARTY_ORDER ="thirdPartyOrder";
 	public String KEY_IS_OFFLINE_ORDER ="isOffLineWARPOrder";
+	public String KEY_TIMESTAMP = "timeStamp";
 
 	 
 	public String KEY_BACKORDER_QUANTITY = "backorderQuantity";
@@ -262,6 +263,16 @@ public class PayloadUtil {
 
 		return jsonObject.toString();
 	}	
+	
+	public String addTimeStampInJSON(String json){
+		JSONObject jsonObject = new JSONObject(json);
+		
+		TimeZone.setDefault(TimeZone.getTimeZone("EST"));
+
+		jsonObject.put(KEY_TIMESTAMP, new SimpleDateFormat(DATE_FORMAT).format(new Date()));
+
+		return jsonObject.toString();
+	}
 
 //	public String addRecordIDInJSON(String json){
 //		
