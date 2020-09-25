@@ -18,6 +18,7 @@ public class ElasticsearchUtilDeprecated {
 	private static boolean ES_DEADLETTER_INDEX_ENABLED = false;
 	private static boolean ES_NOTIFY_INDEX_ENABLED = false;
 	private static boolean ES_NOTIFY_RESPONSE_INDEX_ENABLED = false;
+	private static boolean ES_LOG_INDEX_ENABLED = false;
 	public static boolean ES_ORDER_MASTER_INDEX_ENABLED = false;
 	
 	private static String ES_INDEX;
@@ -26,6 +27,7 @@ public class ElasticsearchUtilDeprecated {
 	private static String ES_DEADLETTER_INDEX;
 	private static String ES_NOTIFY_INBOUND_INDEX;
 	private static String ES_NOTIFY_RESPONSE_INDEX;
+	private static String ES_LOG_INDEX;
 	private static String ES_ORDER_MASTER_INDEX;
 	private static String ES_TYPE;
 	
@@ -123,6 +125,13 @@ public class ElasticsearchUtilDeprecated {
 		if (ES_NOTIFY_INDEX_ENABLED){
 			logger.debug("ElasticsearchUtil::writeNotifyInboundToElasticsearchIndex ... writing record to elasticsearch: " + ES_NOTIFY_INBOUND_INDEX);		
 			writeToElasticsearchIndexWithJSON(json, ES_NOTIFY_INBOUND_INDEX);
+		}
+	}
+
+	public void writeLogToElasticsearchIndex(String json){
+		if (ES_LOG_INDEX_ENABLED){
+			logger.debug("ElasticsearchUtil::writeLogToElasticsearchIndex ... writing record to elasticsearch: " + ES_LOG_INDEX);		
+			writeToElasticsearchIndexWithJSON(json, ES_LOG_INDEX);
 		}
 	}
 	
@@ -239,6 +248,7 @@ public class ElasticsearchUtilDeprecated {
 			ES_NOTIFY_RESPONSE_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.notify.response.enabled");
 			ES_ORDER_MASTER_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.order.master.enabled");
 			
+			
 			ES_TYPE = ConfigurationManager.getConfigInstance().getString("rto.index.type");
 			
 			if (ES_INDEX_ENABLED){
@@ -251,7 +261,12 @@ public class ElasticsearchUtilDeprecated {
 				ES_NOTIFY_INBOUND_INDEX = ConfigurationManager.getConfigInstance().getString("rto.index.notify.inbound");
 				logger.info("----->>>> ES_NOTIFY_INBOUND_INDEX = " + ES_NOTIFY_INBOUND_INDEX);
 				logger.info("----->>>> ES_NOTIFY_INBOUND_TYPE = " + ES_TYPE);
-			}			
+			}		
+			
+			if (ES_LOG_INDEX_ENABLED){
+				ES_LOG_INDEX = ConfigurationManager.getConfigInstance().getString("rto.index.log");
+				logger.info("----->>>> ES_LOG_INDEX = " + ES_LOG_INDEX);
+			}	
 
 			if (ES_ERROR_INDEX_ENABLED){
 				ES_ERROR_INDEX = ConfigurationManager.getConfigInstance().getString("rto.index.error");
