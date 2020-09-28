@@ -465,13 +465,19 @@ public class PayloadUtil {
 		
 		boolean ret = false;
 		JSONObject jsonObject = new JSONObject(json);
-		String sender = jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).getString(KEY_SENDER);
-		logger.debug("sender: " + sender);
+		String sender = "";
 		
-		if(sender != null && sender.equalsIgnoreCase(VALUE_SENDER_DTS)) {
-			ret = true;
-			
+		try {
+			sender = jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).getString(KEY_SENDER);
+			logger.debug("sender: " + sender);
+			if(sender != null && sender.equalsIgnoreCase(VALUE_SENDER_DTS)) {
+				ret = true;	
+			}
+		} catch (Exception e){
+			//KEY_SENDER not mandatory in RTO & mandatory in RTT so just check.
+			ret = false;
 		}
+
 		return ret;
 	}
 	
