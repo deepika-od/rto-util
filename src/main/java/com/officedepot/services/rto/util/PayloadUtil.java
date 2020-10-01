@@ -545,14 +545,14 @@ public class PayloadUtil extends JSONUtil {
 		
 		return returnValue;
 	}
-
-	public String getMasterIndexId(String json){
-
-		String id = getMasterIndexIdByOrderField(json, KEY_ORDER_NUMBER, getOrderSource(json));
-		
-		//logger.debug("getMasterIndexId: " + id); 
-		return id;
-	}
+//	**** USE getMasterIndexIdByValue instead ****
+//	public String getMasterIndexId(String json){
+//
+//		String id = getMasterIndexIdByOrderField(json, KEY_ORDER_NUMBER, getOrderSource(json));
+//		
+//		//logger.debug("getMasterIndexId: " + id); 
+//		return id;
+//	}
 	
 	public String getSentTimestamp(String json) {
 		JSONObject jsonObject = new JSONObject(json);

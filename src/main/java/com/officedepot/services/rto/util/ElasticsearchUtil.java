@@ -140,7 +140,7 @@ public class ElasticsearchUtil {
 		logger.error("#1 ElasticsearchUtil::writeErrorToElasticsearchIndex ... writing ERROR to elasticsearch INDEX: " + ES_ERROR_INDEX);
 		if (ES_ERROR_INDEX_ENABLED){
 			try {
-				
+
 				String json = new PayloadUtil().addProcessMessageInJSON(errMessage);
 				
 				writeToElasticsearchIndexWithJSON(json, ES_ERROR_INDEX);
@@ -238,14 +238,9 @@ public class ElasticsearchUtil {
 	
 	
 	private void init(){
-		
-
 		if (ES_INDEX==null){
 			logger.info("ElasticsearchUtil::init");
-			
-//			MASTER_VERSION_OBJECT = ConfigurationManager.getConfigInstance().getString("rto.master.index.version.object");
-//			MASTER_VERSION_FIELD = ConfigurationManager.getConfigInstance().getString("rto.master.index.version.field");
-//			
+
 			ES_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.inbound.enabled");
 			ES_ERROR_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.error.enabled");
 			ES_EVENT_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.event.enabled");
