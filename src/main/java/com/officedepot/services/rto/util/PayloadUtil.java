@@ -76,7 +76,7 @@ public class PayloadUtil {
 	//public String KEY_EXTORDERNUMBER ="extOrdNumber";
 	public String KEY_THIRD_PARTY_ORDER ="thirdPartyOrder";
 	public String KEY_IS_OFFLINE_ORDER ="isOffLineWARPOrder";
-	public String KEY_TIMESTAMP = "timeStamp";
+	public String KEY_TIMESTAMP = "timestamp";
 
 	 
 	public String KEY_BACKORDER_QUANTITY = "backorderQuantity";

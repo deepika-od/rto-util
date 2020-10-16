@@ -242,19 +242,28 @@ public class ElasticsearchUtilDeprecated {
 
 	}
 	
+	private boolean getBooleanProperty(String pName) {
+		boolean result = false;
+		try {
+			result = ConfigurationManager.getConfigInstance().getBoolean(pName);
+		} catch (Exception e) {
+			logger.error("Missing property " + pName + " from the configuration file");
+		}
+		return result;
+	}
 	
 	private void init(){
 		if (ES_INDEX==null){
-			logger.info("ElasticsearchUtil::init");
+			logger.debug("ElasticsearchUtil::init");
 			
-			ES_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.inbound.enabled");
-			ES_ERROR_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.error.enabled");
-			ES_EVENT_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.event.enabled");
-			ES_DEADLETTER_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.deadletter.enabled");
-			ES_NOTIFY_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.notify.enabled");
-			ES_LOG_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.log.enabled");
-			ES_NOTIFY_RESPONSE_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.notify.response.enabled");
-			ES_ORDER_MASTER_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.order.master.enabled");
+			ES_INDEX_ENABLED = getBooleanProperty("rto.index.inbound.enabled");
+			ES_ERROR_INDEX_ENABLED = getBooleanProperty("rto.index.error.enabled");
+			ES_EVENT_INDEX_ENABLED = getBooleanProperty("rto.index.event.enabled");
+			ES_DEADLETTER_INDEX_ENABLED = getBooleanProperty("rto.index.deadletter.enabled");
+			ES_NOTIFY_INDEX_ENABLED = getBooleanProperty("rto.index.notify.enabled");
+			ES_LOG_INDEX_ENABLED = getBooleanProperty("rto.index.log.enabled");
+			ES_NOTIFY_RESPONSE_INDEX_ENABLED = getBooleanProperty("rto.index.notify.response.enabled");
+			ES_ORDER_MASTER_INDEX_ENABLED = getBooleanProperty("rto.index.order.master.enabled");
 			
 			
 			ES_TYPE = ConfigurationManager.getConfigInstance().getString("rto.index.type");
