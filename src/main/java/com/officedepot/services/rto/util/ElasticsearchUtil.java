@@ -18,6 +18,7 @@ public class ElasticsearchUtil {
 	private static boolean ES_DEADLETTER_INDEX_ENABLED = false;
 	private static boolean ES_NOTIFY_INDEX_ENABLED = false;
 	private static boolean ES_NOTIFY_RESPONSE_INDEX_ENABLED = false;
+	private static boolean ES_LOG_INDEX_ENABLED = false;
 	public static boolean ES_ORDER_MASTER_INDEX_ENABLED = false;
 	
 	private static String ES_INDEX;
@@ -26,6 +27,7 @@ public class ElasticsearchUtil {
 	private static String ES_DEADLETTER_INDEX;
 	private static String ES_NOTIFY_INBOUND_INDEX;
 	private static String ES_NOTIFY_RESPONSE_INDEX;
+	private static String ES_LOG_INDEX;
 	private static String ES_ORDER_MASTER_INDEX;
 	private static String ES_TYPE;
 	
@@ -134,7 +136,13 @@ public class ElasticsearchUtil {
 			writeToElasticsearchIndexWithJSON(json, ES_NOTIFY_INBOUND_INDEX);
 		}
 	}
-	
+
+	public void writeLogToElasticsearchIndex(String json){
+		if (ES_LOG_INDEX_ENABLED){
+			logger.debug("ElasticsearchUtil::writeLogToElasticsearchIndex ... writing record to elasticsearch: " + ES_LOG_INDEX);		
+			writeLogToElasticsearchIndexWithJSON(json, ES_LOG_INDEX);
+		}
+	}
 	
 	public void writeErrorToElasticsearchIndex(String errMessage){
 		logger.error("#1 ElasticsearchUtil::writeErrorToElasticsearchIndex ... writing ERROR to elasticsearch INDEX: " + ES_ERROR_INDEX);
@@ -177,7 +185,14 @@ public class ElasticsearchUtil {
 			}		
 		}
 	}
+	private void writeLogToElasticsearchIndexWithJSON(String json, String index){
 
+		String type = ES_TYPE;
+		json = new PayloadUtil().addTimeStampInJSON(json);
+		writeToElasticsearchIndex( json,  index,  type);
+		
+	}	
+	
 	
 	private void writeToElasticsearchIndexWithJSON(String json, String index){
 		
@@ -236,18 +251,29 @@ public class ElasticsearchUtil {
 		logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex: AFTER writing to index... ");
 	}
 	
+	private boolean getBooleanProperty(String pName) {
+		boolean result = false;
+		try {
+			result = ConfigurationManager.getConfigInstance().getBoolean(pName);
+		} catch (Exception e) {
+			logger.error("Missing property " + pName + " from the configuration file");
+		}
+		return result;
+	}
 	
 	private void init(){
 		if (ES_INDEX==null){
 			logger.info("ElasticsearchUtil::init");
+						
+			ES_INDEX_ENABLED = getBooleanProperty("rto.index.inbound.enabled");
+			ES_ERROR_INDEX_ENABLED = getBooleanProperty("rto.index.error.enabled");
+			ES_EVENT_INDEX_ENABLED = getBooleanProperty("rto.index.event.enabled");
+			ES_DEADLETTER_INDEX_ENABLED = getBooleanProperty("rto.index.deadletter.enabled");
+			ES_NOTIFY_INDEX_ENABLED = getBooleanProperty("rto.index.notify.enabled");
+			ES_LOG_INDEX_ENABLED = getBooleanProperty("rto.index.log.enabled");
+			ES_NOTIFY_RESPONSE_INDEX_ENABLED = getBooleanProperty("rto.index.notify.response.enabled");
+			ES_ORDER_MASTER_INDEX_ENABLED = getBooleanProperty("rto.index.order.master.enabled");
 
-			ES_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.inbound.enabled");
-			ES_ERROR_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.error.enabled");
-			ES_EVENT_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.event.enabled");
-			ES_DEADLETTER_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.deadletter.enabled");
-			ES_NOTIFY_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.notify.enabled");
-			ES_NOTIFY_RESPONSE_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.notify.response.enabled");
-			ES_ORDER_MASTER_INDEX_ENABLED = ConfigurationManager.getConfigInstance().getBoolean("rto.index.order.master.enabled");
 			
 			ES_TYPE = ConfigurationManager.getConfigInstance().getString("rto.index.type");
 			
@@ -263,6 +289,11 @@ public class ElasticsearchUtil {
 				logger.info("----->>>> ES_NOTIFY_INBOUND_TYPE = " + ES_TYPE);
 			}			
 
+			if (ES_LOG_INDEX_ENABLED){
+				ES_LOG_INDEX = ConfigurationManager.getConfigInstance().getString("rto.index.log");
+				logger.info("----->>>> ES_LOG_INDEX = " + ES_LOG_INDEX);
+			}	
+			
 			if (ES_ERROR_INDEX_ENABLED){
 				ES_ERROR_INDEX = ConfigurationManager.getConfigInstance().getString("rto.index.error");
 				logger.info("----->>>> ES_ERROR_INDEX = " + ES_ERROR_INDEX);
