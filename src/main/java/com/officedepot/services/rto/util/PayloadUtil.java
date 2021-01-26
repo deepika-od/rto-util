@@ -322,34 +322,7 @@ public class PayloadUtil extends JSONUtil {
 		jsonObject = addDurationObject(json, durationObject);
 		
 		return jsonObject.toString();
-	}
-
-//	public String addSentT2ProcessTDuration(String json){
-//		JSONObject jsonObject = new JSONObject(json);
-//
-//		boolean isSentTimestampPresent = isJsonValuePresent(json, KEY_PAYLOAD_ATTRIBUTES, KEY_SENT_TIMESTAMPTZ);
-//		boolean isProcessTimestampPresent = isJsonValuePresent(json, KEY_PAYLOAD_ATTRIBUTES, KEY_PROCESS_TIMESTAMPTZ);
-//		
-//		if (isSentTimestampPresent & isProcessTimestampPresent){
-//			String senderTimestampTZ = getValueFromJSON(json, KEY_PAYLOAD_ATTRIBUTES, KEY_SENT_TIMESTAMPTZ);
-//			String processTimestampTZ = getValueFromJSON(json, KEY_PAYLOAD_ATTRIBUTES, KEY_PROCESS_TIMESTAMPTZ);
-//		
-//			ZonedDateTime senderTimestampZDT = getZoneDateTime(senderTimestampTZ);
-//			ZonedDateTime processTimestampZDT = getZoneDateTime(processTimestampTZ);
-//         
-//			long sentToProcessDuration = temporalDifference(senderTimestampZDT, processTimestampZDT, ChronoUnit.MICROS);
-//			logger.debug("sentToProcessDuration: " + sentToProcessDuration);
-//        
-//			String sentToProcessDurationPretty = formatMicroSec(sentToProcessDuration);
-//			logger.debug("sentToProcessDuration Formatted Diff: " + sentToProcessDurationPretty);
-//
-//			JSONObject payloadAttributes = (JSONObject) jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES);			
-//			payloadAttributes.getJSONObject(KEY_DURATIONS).put(KEY_SENT_TO_PROCESS_DURATION, sentToProcessDuration);
-//			payloadAttributes.getJSONObject(KEY_DURATIONS).put(KEY_SENT_TO_PROCESS_DURATION_FORMATTED, sentToProcessDurationPretty);			
-//		}
-//        
-//		return jsonObject.toString();
-//	}	
+	}	
 	
 	
 	public String addProcessTimeStampTZInJSON(String json){
