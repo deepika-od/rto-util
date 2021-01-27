@@ -136,10 +136,10 @@ public class PayloadUtil extends JSONUtil {
 	String DEFAULT_VALUE_KINESIS_KEY = "1234567";
 	String KEY_LOYALTYID = "loyaltyId";
 	String KEY_SENT_TO_PROCESS_DURATION = "sentT2ProcessT";
-	String KEY_SENT_TO_PROCESS_DURATION_FORMATTED = "sentT2ProcessTFormatted";
+	String KEY_SENT_TO_PROCESS_DURATION_FORMATTED = "sentT2ProcessTFmt";
 	String KEY_ORDERDATE_TO_SENT_DURATION = "orderDate2SentT";
-	String KEY_ORDERDATE_TO_SENT_DURATION_FORMATTED = "orderDate2SentTFormatted";
-	String KEY_DURATIONS = "timeTracking";
+	String KEY_ORDERDATE_TO_SENT_DURATION_FORMATTED = "orderDate2SentTFmt";
+	String KEY_DURATIONS = "kronos";
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd.HH.mm:ss.SSSSSS";
 	public final String BAD_DATE_SUBSTITUTE = "9999-01-01";
@@ -350,7 +350,8 @@ public class PayloadUtil extends JSONUtil {
 		final long ms  = TimeUnit.MICROSECONDS.toMillis(microseconds)  - TimeUnit.SECONDS.toMillis(TimeUnit.MICROSECONDS.toSeconds(microseconds));
 		final long us  = TimeUnit.MICROSECONDS.toMicros(microseconds)  - TimeUnit.MILLISECONDS.toMicros(TimeUnit.MICROSECONDS.toMillis(microseconds));
 		
-		return String.format("%d Days %d Hours %d Minutes %d Seconds %d Milliseconds %d Microseconds", dy, hr, min, sec, ms, us);
+		//return String.format("%d Days %d Hours %d Minutes %d Seconds %d Milliseconds %d Microseconds", dy, hr, min, sec, ms, us);
+		return String.format("%dd, %dh, %dm, %ds, %dms, %dµs", dy, hr, min, sec, ms, us);
 	}
 	
 	public String addTimeStampInJSON(String json){

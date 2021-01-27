@@ -211,7 +211,6 @@ public class ElasticsearchUtil {
 		String type = ES_TYPE;
 		json = new PayloadUtil().addProcessTimeStampInJSON(json);
 		json = new PayloadUtil().addProcessTimeStampTZInJSON(json);
-		json = new PayloadUtil().addElapsedTimesInJSON(json);
 		writeToElasticsearchIndex( json,  index,  type);
 		
 	}
@@ -221,7 +220,9 @@ public class ElasticsearchUtil {
 		String type = ES_TYPE;
 		json = new PayloadUtil().addProcessTimeStampInJSON(json);
 		json = new PayloadUtil().addProcessTimeStampTZInJSON(json);
-		json = new PayloadUtil().addElapsedTimesInJSON(json);
+		if (ES_TIMESTAMP_ENABLED) {
+			json = new PayloadUtil().addElapsedTimesInJSON(json);
+		}
 		writeInboundMasterToElasticsearchIndex( json,  index,  type, pipelineName);
 		
 	}
