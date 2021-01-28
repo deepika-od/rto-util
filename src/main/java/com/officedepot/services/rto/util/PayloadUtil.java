@@ -2,10 +2,15 @@ package com.officedepot.services.rto.util;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -46,6 +51,7 @@ public class PayloadUtil extends JSONUtil {
 	public String KEY_PROCESS_EVENT_DESTINATION_KEY = "processDestinationKey";
 	public String KEY_PROCESS_MESSAGE = "processMessage";
 	public String KEY_PROCESS_TIMESTAMP = "processTimeStamp";
+	public String KEY_PROCESS_TIMESTAMPTZ = "processTimeStampTZ";
 	public String KEY_ORDER_KEY = "processOrderKey";
 	public String KEY_PROCESS_NOTIFY_RESPONES_TIME = "processNotifyResponseTime";
 	public String KEY_PROCESS_NOTIFY_RESPONES_MSG = "processNotifyResponseMsg";
@@ -57,6 +63,7 @@ public class PayloadUtil extends JSONUtil {
 	public String KEY_RECORD_INDEX_NAME = "indexName";
 	
 	public String KEY_ORDERDATE = "orderDate";
+	public String KEY_ORDERDATE_TIMESTAMP = "orderDateTimestamp";
 	public String KEY_ORDERTYPE = "orderType";
 	public String KEY_VWORDERTYPE = "vwOrderType";
 	public String KEY_BILLCOMPLETEFLAG = "billCompleteFlag";
@@ -123,13 +130,21 @@ public class PayloadUtil extends JSONUtil {
 	String KEY_ORDER_SUBNUMBER = "ordersubNumber";
 	String KEY_SENT_TIMESTAMP_KEYWORD = "sentTimestamp.keyword";
 	String KEY_SENT_TIMESTAMP = "sentTimestamp";
+	String KEY_SENT_TIMESTAMPTZ = "sentTimestampTZ";
 	String KEY_ACCOUNTID = "accountId";
 	String KEY_UNIQUEID = "uniqueID";
 	String DEFAULT_VALUE_KINESIS_KEY = "1234567";
 	String KEY_LOYALTYID = "loyaltyId";
+	String KEY_SENT_TO_PROCESS_DURATION = "sentT2ProcessT";
+	String KEY_SENT_TO_PROCESS_DURATION_FORMATTED = "sentT2ProcessTFmt";
+	String KEY_ORDERDATE_TO_SENT_DURATION = "orderDate2SentT";
+	String KEY_ORDERDATE_TO_SENT_DURATION_FORMATTED = "orderDate2SentTFmt";
+	String KEY_DURATIONS = "kronos";
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd.HH.mm:ss.SSSSSS";
 	public final String BAD_DATE_SUBSTITUTE = "9999-01-01";
+    public final String ISO_DATE_PATTERN = "uuuu-MM-dd'T'HH:mm:ss.SSSSSSz";
+    public final String ZONED_DATE_PATTERN = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS[XXX]";
 	
 	/*
 	* Accepts a timestamp mask: YYYY-MM-DD-hh.mm.ss.yyyyyy
@@ -227,6 +242,117 @@ public class PayloadUtil extends JSONUtil {
 
 		return jsonObject.toString();
 	}	
+
+	private ZonedDateTime getZoneDateTime(String inputDate) {
+        DateTimeFormatter formatterTimezone = DateTimeFormatter.ofPattern(ISO_DATE_PATTERN);
+        ZonedDateTime inputDateZDT = ZonedDateTime.parse(inputDate, formatterTimezone);
+        return inputDateZDT;
+	}
+	
+	public String addElapsedTimesInJSON(String json){
+		
+		json = addOrderDate2SentTDuration(json);
+		json = addSentT2ProcessTDuration(json);
+
+		return json;
+	}
+	
+	public ZonedDateTime asTimeZoneDate(String json, String levelKey, String key) {
+		ZonedDateTime response = null;
+		
+		if (isJsonValuePresent(json, levelKey, key)) {
+			String value = getValueFromJSON(json, levelKey, key);
+			response = getZoneDateTime(value);
+		}
+		return response;
+	}
+	
+	public JSONObject durationAsJSON(ZonedDateTime startDate, ZonedDateTime endDate, String key1, String key2) {
+		JSONObject jObject = null;
+		if (startDate != null && endDate != null) {
+			long duration = temporalDifference(startDate, endDate, ChronoUnit.MICROS);
+			String formattedDuration = formatMicroSec(duration);
+
+			jObject = new JSONObject();
+			jObject.put(key1, duration);
+			jObject.put(key2, formattedDuration);			
+		}
+		return jObject;
+	}
+		
+	public JSONObject addDurationObject(String json, JSONObject durationJSON) {
+		JSONObject jsonObject = new JSONObject(json);
+		if (durationJSON != null) {
+			JSONObject payloadAttributes = (JSONObject) jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES);
+			if (isJsonKeyPresent(json, KEY_PAYLOAD_ATTRIBUTES, KEY_DURATIONS)) { //
+				durationJSON.keySet().forEach(keyStr ->
+			    {
+			        Object keyvalue = durationJSON.get(keyStr);
+			        payloadAttributes.getJSONObject(KEY_DURATIONS).put(keyStr, keyvalue);
+			    });
+			} else {
+				payloadAttributes.put(KEY_DURATIONS, durationJSON);
+			}
+
+		}
+		return jsonObject;
+
+	}
+	public String addOrderDate2SentTDuration(String json){
+		JSONObject jsonObject = new JSONObject(json);
+		
+		ZonedDateTime orderDateTimestampZDT = asTimeZoneDate(json, KEY_ORDER_HEADER, KEY_ORDERDATE_TIMESTAMP);
+		ZonedDateTime sentTimestampZDT = asTimeZoneDate(json, KEY_PAYLOAD_ATTRIBUTES, KEY_SENT_TIMESTAMPTZ);
+		
+		JSONObject durationObject = durationAsJSON(orderDateTimestampZDT, sentTimestampZDT, KEY_ORDERDATE_TO_SENT_DURATION, KEY_ORDERDATE_TO_SENT_DURATION_FORMATTED);
+		
+		jsonObject = addDurationObject(json, durationObject);
+		
+		return jsonObject.toString();
+	}
+	
+	public String addSentT2ProcessTDuration(String json){
+		JSONObject jsonObject = new JSONObject(json);
+		
+		ZonedDateTime sentTimestampZDT = asTimeZoneDate(json, KEY_PAYLOAD_ATTRIBUTES, KEY_SENT_TIMESTAMPTZ);
+		ZonedDateTime processTimestampZDT = asTimeZoneDate(json, KEY_PAYLOAD_ATTRIBUTES, KEY_PROCESS_TIMESTAMPTZ);
+		
+		JSONObject durationObject = durationAsJSON(sentTimestampZDT, processTimestampZDT, KEY_SENT_TO_PROCESS_DURATION, KEY_SENT_TO_PROCESS_DURATION_FORMATTED);
+		
+		jsonObject = addDurationObject(json, durationObject);
+		
+		return jsonObject.toString();
+	}	
+	
+	
+	public String addProcessTimeStampTZInJSON(String json){
+		JSONObject jsonObject = new JSONObject(json);
+		
+		ZonedDateTime zoneDateTime = ZonedDateTime.now();
+        String processTimeTZ = zoneDateTime.format(DateTimeFormatter.ofPattern(ZONED_DATE_PATTERN));
+        
+		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_TIMESTAMPTZ, processTimeTZ);
+
+		return jsonObject.toString();
+	}
+
+	  //Since both ZonedDateTime and LocalDateTime implements Temporal interface, you can write also universal method for those date-time types:
+	
+	public long temporalDifference(Temporal d1, Temporal d2, ChronoUnit unit){
+	   return unit.between(d1, d2);
+	}
+	
+	String formatMicroSec(long microseconds) {						
+		final long dy  = TimeUnit.MICROSECONDS.toDays(microseconds);
+		final long hr  = TimeUnit.MICROSECONDS.toHours(microseconds)   - TimeUnit.DAYS.toHours(TimeUnit.MICROSECONDS.toDays(microseconds));
+		final long min = TimeUnit.MICROSECONDS.toMinutes(microseconds) - TimeUnit.HOURS.toMinutes(TimeUnit.MICROSECONDS.toHours(microseconds));
+		final long sec = TimeUnit.MICROSECONDS.toSeconds(microseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MICROSECONDS.toMinutes(microseconds));
+		final long ms  = TimeUnit.MICROSECONDS.toMillis(microseconds)  - TimeUnit.SECONDS.toMillis(TimeUnit.MICROSECONDS.toSeconds(microseconds));
+		final long us  = TimeUnit.MICROSECONDS.toMicros(microseconds)  - TimeUnit.MILLISECONDS.toMicros(TimeUnit.MICROSECONDS.toMillis(microseconds));
+		
+		//return String.format("%d Days %d Hours %d Minutes %d Seconds %d Milliseconds %d Microseconds", dy, hr, min, sec, ms, us);
+		return String.format("%dd, %dh, %dm, %ds, %dms, %dµs", dy, hr, min, sec, ms, us);
+	}
 	
 	public String addTimeStampInJSON(String json){
 		JSONObject jsonObject = new JSONObject(json);

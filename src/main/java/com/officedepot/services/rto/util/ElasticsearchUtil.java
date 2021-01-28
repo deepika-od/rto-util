@@ -1,5 +1,6 @@
 package com.officedepot.services.rto.util;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,8 @@ public class ElasticsearchUtil {
 	private static boolean ES_NOTIFY_INDEX_ENABLED = false;
 	private static boolean ES_NOTIFY_RESPONSE_INDEX_ENABLED = false;
 	private static boolean ES_LOG_INDEX_ENABLED = false;
-	public static boolean ES_ORDER_MASTER_INDEX_ENABLED = false;
+	private static boolean ES_ORDER_MASTER_INDEX_ENABLED = false;
+	private static boolean ES_TIMESTAMP_ENABLED = false;
 	
 	private static String ES_INDEX;
 	private static String ES_ERROR_INDEX;
@@ -30,6 +32,7 @@ public class ElasticsearchUtil {
 	private static String ES_LOG_INDEX;
 	private static String ES_ORDER_MASTER_INDEX;
 	private static String ES_TYPE;
+	private static String ES_TIMESTAMP_PIPELINE;
 	
 	public ElasticsearchUtil(){
 		init();
@@ -102,9 +105,10 @@ public class ElasticsearchUtil {
 	}
 
 	public void writeInboundMasterToElasticsearchIndex(String json, String indexSuffix) {
+
 		if (ES_ORDER_MASTER_INDEX_ENABLED){
 			logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex ... writing record to elasticsearch: " + ES_ORDER_MASTER_INDEX + indexSuffix);		
-			writeInboundMasterToElasticsearchIndexWithJSON(json, ES_ORDER_MASTER_INDEX + indexSuffix);
+			writeInboundMasterToElasticsearchIndexWithJSON(json, ES_ORDER_MASTER_INDEX + indexSuffix, getESTimestampPipelineName());
 		}		
 	}
 	
@@ -118,7 +122,15 @@ public class ElasticsearchUtil {
 		return ret;
 	}
 	
-	
+
+	public String getESTimestampPipelineName() {
+		String ret = "";
+		if (ES_TIMESTAMP_ENABLED){
+			logger.debug("ElasticsearchUtil::getESTimestampPipelineName ...: " + ES_TIMESTAMP_PIPELINE);		
+			ret = ES_TIMESTAMP_PIPELINE;
+		}
+		return ret;
+	}
 	public void writeInboundToElasticsearchIndex(String json){
 		writeInboundToElasticsearchIndex(json, "");
 	}
@@ -198,17 +210,23 @@ public class ElasticsearchUtil {
 		
 		String type = ES_TYPE;
 		json = new PayloadUtil().addProcessTimeStampInJSON(json);
+		json = new PayloadUtil().addProcessTimeStampTZInJSON(json);
 		writeToElasticsearchIndex( json,  index,  type);
 		
 	}
 
-	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index){
+	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index, String pipelineName){
 		
 		String type = ES_TYPE;
 		json = new PayloadUtil().addProcessTimeStampInJSON(json);
-		writeInboundMasterToElasticsearchIndex( json,  index,  type);
+		json = new PayloadUtil().addProcessTimeStampTZInJSON(json);
+		if (ES_TIMESTAMP_ENABLED) {
+			json = new PayloadUtil().addElapsedTimesInJSON(json);
+		}
+		writeInboundMasterToElasticsearchIndex( json,  index,  type, pipelineName);
 		
 	}
+	
 	
 	private void writeToElasticsearchIndex(String payload, String index, String type){
 
@@ -227,7 +245,7 @@ public class ElasticsearchUtil {
 	}
 
 	
-	private void writeInboundMasterToElasticsearchIndex(String payload, String index, String type){
+	private void writeInboundMasterToElasticsearchIndex(String payload, String index, String type, String pipeline){
 
 		//logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::writing to index: " + index + ", type: " + type + ", payload: " + payload);
 		PayloadUtil payloadUtil = new PayloadUtil();
@@ -242,7 +260,7 @@ public class ElasticsearchUtil {
 		
 		try{
 			
-			elasticSearchHighLevelDAOImpl.indexDoc(index, type, id, version, versionType, payload);	
+			elasticSearchHighLevelDAOImpl.indexDoc(index, type, id, version, versionType, payload, pipeline);	
 		} catch (Exception e){
 			logger.error("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::FAILED writing to index " + index + " + " + payload);
 			logger.error("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::EXCEPTION: " + e.getMessage(), e);
@@ -273,6 +291,7 @@ public class ElasticsearchUtil {
 			ES_LOG_INDEX_ENABLED = getBooleanProperty("rto.index.log.enabled");
 			ES_NOTIFY_RESPONSE_INDEX_ENABLED = getBooleanProperty("rto.index.notify.response.enabled");
 			ES_ORDER_MASTER_INDEX_ENABLED = getBooleanProperty("rto.index.order.master.enabled");
+			ES_TIMESTAMP_ENABLED = getBooleanProperty("rto.index.order.es.timestamp.pipeline.enabled");
 
 			
 			ES_TYPE = ConfigurationManager.getConfigInstance().getString("rto.index.type");
@@ -320,7 +339,12 @@ public class ElasticsearchUtil {
 				ES_ORDER_MASTER_INDEX = ConfigurationManager.getConfigInstance().getString("rto.index.order.master");
 				logger.info("----->>>> ES_ORDER_MASTER_INDEX = " + ES_ORDER_MASTER_INDEX);
 				logger.info("----->>>> ES_ORDER_MASTER_TYPE = " + ES_TYPE);	
-			}			
+			}
+			
+			if (ES_TIMESTAMP_ENABLED){
+				ES_TIMESTAMP_PIPELINE = ConfigurationManager.getConfigInstance().getString("rto.index.order.es.timestamp.pipeline");
+				logger.info("----->>>> ES_TIMESTAMP_PIPELINE = " + ES_TIMESTAMP_PIPELINE);
+			}
 		}
 
 
