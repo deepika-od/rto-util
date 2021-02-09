@@ -44,6 +44,18 @@ public class RTORESTUtil  {
 	}
 	
 
+
+	public void executeNotifyDuplicate(String json) throws Exception,CoreServiceException {
+		
+		JSONObject jsonObject = new JSONObject(json);
+		String event = jsonObject.getJSONObject(payloadUtil.KEY_PAYLOAD_ATTRIBUTES).getString(payloadUtil.KEY_PROCESS_EVENT);
+		LOGGER.debug(CLASS_NAME + "executeNotify::event: " + event);
+		
+		new ElasticsearchUtil().writeNotifyResponseToElasticsearchIndex("0", "NA", "duplicate", json, "NA");
+
+
+	}
+	
 	public void executeNotify(String json) throws Exception,CoreServiceException {
 		
 		JSONObject jsonObject = new JSONObject(json);

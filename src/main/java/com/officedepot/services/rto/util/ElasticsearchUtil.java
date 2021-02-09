@@ -39,6 +39,12 @@ public class ElasticsearchUtil {
 	}
 
 	
+	public String getNotifyResponseIndex(){
+		return ElasticsearchUtil.ES_NOTIFY_RESPONSE_INDEX;
+	}
+		
+		
+		
 	public void writeDeadLetterToElasticsearchIndex(String msg, String json){
 		
 		logger.error(CLASS_NAME + "writeDeadLetterToElasticsearchIndex" + METHOD_MESSAGE + ES_DEADLETTER_INDEX);
