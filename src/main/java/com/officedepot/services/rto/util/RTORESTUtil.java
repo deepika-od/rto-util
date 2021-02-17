@@ -43,35 +43,24 @@ public class RTORESTUtil  {
 		LOGGER.info(CLASS_NAME + "init::isApiUrlEnabled: " + isApiUrlEnabled);
 	}
 	
-
-
-	public void executeNotifyDuplicate(String json) throws Exception,CoreServiceException {
+	public boolean executeNotify(String json, String eventKey) throws Exception,CoreServiceException {
 		
-		JSONObject jsonObject = new JSONObject(json);
-		String event = jsonObject.getJSONObject(payloadUtil.KEY_PAYLOAD_ATTRIBUTES).getString(payloadUtil.KEY_PROCESS_EVENT);
-		LOGGER.debug(CLASS_NAME + "executeNotify::event: " + event);
-		
-		new ElasticsearchUtil().writeNotifyResponseToElasticsearchIndex("0", "NA", "duplicate", json, "NA");
-
-
-	}
-	
-	public void executeNotify(String json) throws Exception,CoreServiceException {
-		
+		boolean isGood = false;
 		JSONObject jsonObject = new JSONObject(json);
 		String event = jsonObject.getJSONObject(payloadUtil.KEY_PAYLOAD_ATTRIBUTES).getString(payloadUtil.KEY_PROCESS_EVENT);
 		LOGGER.debug(CLASS_NAME + "executeNotify::event: " + event);
 		
 		if(isApiUrlDebugEnabled){
-			postHttp(apiUrlDebug, json, false, false);
+			isGood = postHttp(apiUrlDebug, json, false, false, eventKey);
 		}	
 	
 		if(isApiUrlEnabled){
-			postHttp(apiUrl, json, true, true);
+			isGood = postHttp(apiUrl, json, true, true, eventKey);
 		}	
+		return isGood;
 	}
 	
-    public void postHttp(String apiUrl, String json, boolean withBasicAuth, boolean nonValidationPost) throws UnsupportedEncodingException
+    public boolean postHttp(String apiUrl, String json, boolean withBasicAuth, boolean nonValidationPost, String eventKey) throws UnsupportedEncodingException
     {
     	String logMessage = CLASS_NAME + "postHttp::";
     	String time = "";
@@ -81,6 +70,7 @@ public class RTORESTUtil  {
     	Map<String, String> params = new HashMap<String, String>();
     	params.put("payload", json);
     	startTime = new Date().getTime();
+    	boolean isGood = false;
     	
     	LOGGER.debug(logMessage + "request json payload: " + json + "::url:" + apiUrl);
     	LOGGER.debug(logMessage + "request url: " + "::url:" + apiUrl);
@@ -95,7 +85,8 @@ public class RTORESTUtil  {
 	    		data = HttpClientExecutor.executePostAndReturnString("rto-notify-service", apiUrl, params, null, null);
 	    	}
 	    	
-	    	errMsg = getReturnErrorMessage(data, withBasicAuth);
+	    	isGood = payloadUtil.hasJsonValue(data, payloadUtil.KEY_RESPONSE, payloadUtil.VALUE_RESPONSE);
+	    	errMsg = getReturnErrorMessage(data, withBasicAuth, isGood);
 	    	
 	    	if (!StringUtils.isEmpty(errMsg)){
 	    		LOGGER.error(logMessage + errMsg + data + " ::url: " + apiUrl);
@@ -125,18 +116,19 @@ public class RTORESTUtil  {
 				time = "0";
 				long endTime = new Date().getTime();
 				time = new Long(endTime - startTime).toString();
-				new ElasticsearchUtil().writeNotifyResponseToElasticsearchIndex(time, data, errMsg, json, apiUrl);
+				new ElasticsearchUtil().writeNotifyResponseToElasticsearchIndex(time, data, errMsg, json, apiUrl, eventKey);
 			}
 		
 		}
+		return isGood;
     }
     
-    public String getReturnErrorMessage(String returnPayload, boolean withBasicAuth){
+    public String getReturnErrorMessage(String returnPayload, boolean withBasicAuth, boolean isGood){
     	
     	String ret = "";
     	
     	if(withBasicAuth){
-        	if (StringUtils.isEmpty(returnPayload) || !payloadUtil.hasJsonValue(returnPayload, payloadUtil.KEY_RESPONSE, payloadUtil.VALUE_RESPONSE)){
+        	if (StringUtils.isEmpty(returnPayload) || !isGood){
         		ret = "(Basic Auth):Bad Response from HTTP POST. ";
         	}	
     	}else{

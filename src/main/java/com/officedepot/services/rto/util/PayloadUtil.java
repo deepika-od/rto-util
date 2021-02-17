@@ -31,6 +31,8 @@ public class PayloadUtil extends JSONUtil {
 
 	
 	private static final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+	private String threadID = Long.toString(Thread.currentThread().getId());
+	
 	private static final String id = UUID.randomUUID().toString();
 	//Destination Values
 	public String VALUE_DESTINATION_KEY_ECOM = "ecom";
@@ -60,6 +62,7 @@ public class PayloadUtil extends JSONUtil {
 	public String KEY_PROCESS_NOTIFY_RESPONES_TIME = "processNotifyResponseTime";
 	public String KEY_PROCESS_NOTIFY_RESPONES_MSG = "processNotifyResponseMsg";
 	public String KEY_PROCESS_NOTIFY_URL = "processNotifyURL";
+	public String KEY_PROCESS_EVENT_KEY = "processEventKey";
 	public String KEY_PAYLOAD_ATTRIBUTES_SOURCE = "source";
 	public String KEY_PAYLOAD_ATTRIBUTES_CUST_CUSTOMER_TYPE = "custCustomerType";
 	public String KEY_RECORD_ID = "docID";
@@ -130,7 +133,7 @@ public class PayloadUtil extends JSONUtil {
 	public String VALUE_RESPONSE = "ok";
 	
 	String KEY_PARENT_ORDER_NUMBER = "parentOrder";
-	String KEY_ORDER_NUMBER = "orderNumber";
+	public String KEY_ORDER_NUMBER = "orderNumber";
 	public String KEY_ORDER_SUBNUMBER = "ordersubNumber";
 	String KEY_SENT_TIMESTAMP_KEYWORD = "sentTimestamp.keyword";
 	String KEY_SENT_TIMESTAMP = "sentTimestamp";
@@ -203,28 +206,13 @@ public class PayloadUtil extends JSONUtil {
 		
 		smallJSON = addKeyValueToJSON(smallJSON, KEY_PAYLOAD_ATTRIBUTES, "jvmName", PayloadUtil.jvmName);
 		
+		smallJSON = addKeyValueToJSON(smallJSON, KEY_PAYLOAD_ATTRIBUTES, "threadID", this.threadID);
+		
  		logger.debug(CLASS_NAME + "::getSmallOrderHeader::smallJSON = " + smallJSON);
 
  		return smallJSON;
 	}
 	
-	
-	public String getDupKey(String json){
-		String dupKey = "NO-KEY";
-		
-		if(isJsonValuePresent( json, KEY_ORDER_HEADER, KEY_ACCOUNTID) 
-				&& isJsonValuePresent(json, KEY_ORDER_HEADER, KEY_ORDER_NUMBER)
-				&& (isJsonValuePresent(json, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER)))
-			{
-			dupKey = getValueFromJSON(json, KEY_ORDER_HEADER, KEY_ACCOUNTID);	
-			dupKey = dupKey + getValueFromJSON(json, KEY_ORDER_HEADER, KEY_ORDER_NUMBER);
-			dupKey = dupKey + getValueFromJSON(json, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER);
-		}
-
- 		logger.debug(CLASS_NAME + "::getDupKey::dupKey = " + dupKey);
-
- 		return dupKey;
-	}
 
 	public String createJSONWithEventInfo(String event, String destinationKey, String key){
 		
