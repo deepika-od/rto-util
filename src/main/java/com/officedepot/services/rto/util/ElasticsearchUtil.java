@@ -254,7 +254,6 @@ public class ElasticsearchUtil {
 	
 	private void writeInboundMasterToElasticsearchIndex(String payload, String index, String type, String pipeline){
 
-		//logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::writing to index: " + index + ", type: " + type + ", payload: " + payload);
 		PayloadUtil payloadUtil = new PayloadUtil();
 		
 		String id = payloadUtil.getMasterIndexIdByValue(payload);
