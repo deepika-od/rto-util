@@ -39,6 +39,12 @@ public class ElasticsearchUtil {
 	}
 
 	
+	public String getNotifyResponseIndex(){
+		return ElasticsearchUtil.ES_NOTIFY_RESPONSE_INDEX;
+	}
+		
+		
+		
 	public void writeDeadLetterToElasticsearchIndex(String msg, String json){
 		
 		logger.error(CLASS_NAME + "writeDeadLetterToElasticsearchIndex" + METHOD_MESSAGE + ES_DEADLETTER_INDEX);
@@ -64,7 +70,7 @@ public class ElasticsearchUtil {
 	}	
 	
 	
-	public void writeNotifyResponseToElasticsearchIndex(String time, String response, String msg, String json, String apiUrl){
+	public void writeNotifyResponseToElasticsearchIndex(String time, String response, String msg, String json, String apiUrl, String eventKey){
 		
 		logger.debug(CLASS_NAME + "writeNotifyResponserToElasticsearchIndex" + METHOD_MESSAGE + ES_NOTIFY_RESPONSE_INDEX);
 		
@@ -77,6 +83,7 @@ public class ElasticsearchUtil {
 				json = payloadUtil.addKeyValueToJSON(json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_PROCESS_NOTIFY_RESPONES_TIME, time );
 				json = payloadUtil.addKeyValueToJSON(json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_PROCESS_NOTIFY_RESPONES_MSG, response );
 				json = payloadUtil.addKeyValueToJSON(json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_PROCESS_NOTIFY_URL, apiUrl );
+				json = payloadUtil.addKeyValueToJSON(json, payloadUtil.KEY_PAYLOAD_ATTRIBUTES, payloadUtil.KEY_PROCESS_EVENT_KEY, eventKey );
 				
 				String smallPayload = payloadUtil.getSmallPayload(json);
 				

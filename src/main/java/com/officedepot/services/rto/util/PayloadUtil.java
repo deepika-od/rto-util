@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netflix.config.ConfigurationManager;
+import java.lang.management.ManagementFactory;
 
 public class PayloadUtil extends JSONUtil {
 	private static final Logger logger = LoggerFactory.getLogger(PayloadUtil.class);
@@ -28,6 +30,10 @@ public class PayloadUtil extends JSONUtil {
 	private static final String CLASS_NAME = "PayloadUtil";
 
 	
+	private static final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+	private String threadID = Long.toString(Thread.currentThread().getId());
+	
+	private static final String id = UUID.randomUUID().toString();
 	//Destination Values
 	public String VALUE_DESTINATION_KEY_ECOM = "ecom";
 	public String VALUE_DESTINATION_KEY_SCM = "scm";
@@ -56,6 +62,7 @@ public class PayloadUtil extends JSONUtil {
 	public String KEY_PROCESS_NOTIFY_RESPONES_TIME = "processNotifyResponseTime";
 	public String KEY_PROCESS_NOTIFY_RESPONES_MSG = "processNotifyResponseMsg";
 	public String KEY_PROCESS_NOTIFY_URL = "processNotifyURL";
+	public String KEY_PROCESS_EVENT_KEY = "processEventKey";
 	public String KEY_PAYLOAD_ATTRIBUTES_SOURCE = "source";
 	public String KEY_PAYLOAD_ATTRIBUTES_CUST_CUSTOMER_TYPE = "custCustomerType";
 	public String KEY_RECORD_ID = "docID";
@@ -126,12 +133,12 @@ public class PayloadUtil extends JSONUtil {
 	public String VALUE_RESPONSE = "ok";
 	
 	String KEY_PARENT_ORDER_NUMBER = "parentOrder";
-	String KEY_ORDER_NUMBER = "orderNumber";
-	String KEY_ORDER_SUBNUMBER = "ordersubNumber";
+	public String KEY_ORDER_NUMBER = "orderNumber";
+	public String KEY_ORDER_SUBNUMBER = "ordersubNumber";
 	String KEY_SENT_TIMESTAMP_KEYWORD = "sentTimestamp.keyword";
 	String KEY_SENT_TIMESTAMP = "sentTimestamp";
 	String KEY_SENT_TIMESTAMPTZ = "sentTimestampTZ";
-	String KEY_ACCOUNTID = "accountId";
+	public String KEY_ACCOUNTID = "accountId";
 	String KEY_UNIQUEID = "uniqueID";
 	String DEFAULT_VALUE_KINESIS_KEY = "1234567";
 	String KEY_LOYALTYID = "loyaltyId";
@@ -186,26 +193,26 @@ public class PayloadUtil extends JSONUtil {
 			String orderNumber = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER);
 			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER, orderNumber);
 		}
-		
-		if (isJsonValuePresent(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER)){
-			String orderNumber = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER);
-			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ORDER_NUMBER, orderNumber);
-		}
-		
+			
 		if (isJsonValuePresent(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER)){
 			String orderSubNumber = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER);
 			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ORDER_SUBNUMBER, orderSubNumber);
 		}
 
-		if(isJsonValuePresent( smallJSON, KEY_ORDER_HEADER, KEY_ACCOUNTID)){
+		if(isJsonValuePresent( orderJSON, KEY_ORDER_HEADER, KEY_ACCOUNTID)){
 			String accountId = getValueFromJSON(orderJSON, KEY_ORDER_HEADER, KEY_ACCOUNTID);
 			smallJSON = addKeyValueToJSON(smallJSON, KEY_ORDER_HEADER, KEY_ACCOUNTID, accountId);
 		}
-	
+		
+		smallJSON = addKeyValueToJSON(smallJSON, KEY_PAYLOAD_ATTRIBUTES, "jvmName", PayloadUtil.jvmName);
+		
+		smallJSON = addKeyValueToJSON(smallJSON, KEY_PAYLOAD_ATTRIBUTES, "threadID", this.threadID);
+		
  		logger.debug(CLASS_NAME + "::getSmallOrderHeader::smallJSON = " + smallJSON);
 
  		return smallJSON;
 	}
+	
 
 	public String createJSONWithEventInfo(String event, String destinationKey, String key){
 		
