@@ -21,6 +21,7 @@ public class ElasticsearchUtil {
 	private static boolean ES_NOTIFY_RESPONSE_INDEX_ENABLED = false;
 	private static boolean ES_LOG_INDEX_ENABLED = false;
 	private static boolean ES_ORDER_MASTER_INDEX_ENABLED = false;
+	private static boolean ES_EXTENDED_ADDRESS_INDEX_ENABLED = false;
 	private static boolean ES_TIMESTAMP_ENABLED = false;
 	
 	private static String ES_INDEX;
@@ -33,6 +34,7 @@ public class ElasticsearchUtil {
 	private static String ES_ORDER_MASTER_INDEX;
 	private static String ES_TYPE;
 	private static String ES_TIMESTAMP_PIPELINE;
+	private static String ES_EXTENDED_ADDRESS_INDEX;
 	
 	public ElasticsearchUtil(){
 		init();
@@ -111,6 +113,19 @@ public class ElasticsearchUtil {
 		writeInboundMasterToElasticsearchIndex(json, "");
 	}
 
+	public void writeExtendedAddressToElasticsearchIndex(String json, String indexSuffix) {
+		if (ES_EXTENDED_ADDRESS_INDEX_ENABLED) {
+			logger.debug("ElasticsearchUtil::writeExtendedAddressToElasticsearchIndex ... writing record to elasticsearch: " + ES_EXTENDED_ADDRESS_INDEX + indexSuffix);
+			writeInboundMasterToElasticsearchIndexWithJSON(json, ES_EXTENDED_ADDRESS_INDEX + indexSuffix, getESTimestampPipelineName());
+		}
+	}
+	
+	public void writeNoneAOPSOrderToMasterElasticsearchIndex(String json, String indexSuffix) {
+		if (ES_ORDER_MASTER_INDEX_ENABLED){
+			logger.debug("ElasticsearchUtil::writeNoneAOPSMasterToElasticsearchIndex ... writing record to elasticsearch: " + ES_ORDER_MASTER_INDEX + indexSuffix);		
+			writeInboundMasterToElasticsearchIndexWithJSON(json, ES_ORDER_MASTER_INDEX + indexSuffix, getESTimestampPipelineName(), true);
+		}				
+	}
 	public void writeInboundMasterToElasticsearchIndex(String json, String indexSuffix) {
 
 		if (ES_ORDER_MASTER_INDEX_ENABLED){
@@ -129,7 +144,19 @@ public class ElasticsearchUtil {
 		return ret;
 	}
 	
+	public String getAddressExtensionById(String id ) {
+		String index = ES_EXTENDED_ADDRESS_INDEX;
+		String type = ES_TYPE;
+		return getDocAsSource(index, type, id);
+	}
+	
+	public String getDocAsSource(String index, String type, String id ) {
+		ElasticSearchHighLevelDAOImpl elasticSearchHighLevelDAOImpl = new ElasticSearchHighLevelDAOImpl();
+		String response = elasticSearchHighLevelDAOImpl.getDocAsSource(index, type, id);
+		return response;
+	}
 
+	
 	public String getESTimestampPipelineName() {
 		String ret = "";
 		if (ES_TIMESTAMP_ENABLED){
@@ -222,15 +249,21 @@ public class ElasticsearchUtil {
 		
 	}
 
-	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index, String pipelineName){
+	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index, String pipelineName, boolean createFlag){
 		
 		String type = ES_TYPE;
 		json = new PayloadUtil().addProcessTimeStampInJSON(json);
 		json = new PayloadUtil().addProcessTimeStampTZInJSON(json);
-		writeInboundMasterToElasticsearchIndex( json,  index,  type, pipelineName);
+		writeInboundMasterToElasticsearchIndex( json,  index,  type, pipelineName, createFlag);
 		
 	}
 	
+	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index, String pipelineName){
+		
+		logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndexWithJSON" );	
+		writeInboundMasterToElasticsearchIndexWithJSON(json, index, pipelineName, false);
+		
+	}
 	
 	private void writeToElasticsearchIndex(String payload, String index, String type){
 
@@ -249,7 +282,7 @@ public class ElasticsearchUtil {
 	}
 
 	
-	private void writeInboundMasterToElasticsearchIndex(String payload, String index, String type, String pipeline){
+	private void writeInboundMasterToElasticsearchIndex(String payload, String index, String type, String pipeline, boolean createFlag){
 
 		PayloadUtil payloadUtil = new PayloadUtil();
 		
@@ -260,10 +293,10 @@ public class ElasticsearchUtil {
 		String versionType = payloadUtil.getVersionType();
 		
 		ElasticSearchHighLevelDAOImpl elasticSearchHighLevelDAOImpl = new ElasticSearchHighLevelDAOImpl();
-		
+			
 		try{
 			
-			elasticSearchHighLevelDAOImpl.indexDoc(index, type, id, version, versionType, payload, pipeline);	
+			elasticSearchHighLevelDAOImpl.indexDoc(index, type, id, version, versionType, payload, pipeline, createFlag);	
 		} catch (Exception e){
 			logger.error("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::FAILED writing to index " + index + " + " + payload);
 			logger.error("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::EXCEPTION: " + e.getMessage(), e);
@@ -295,6 +328,7 @@ public class ElasticsearchUtil {
 			ES_NOTIFY_RESPONSE_INDEX_ENABLED = getBooleanProperty("rto.index.notify.response.enabled");
 			ES_ORDER_MASTER_INDEX_ENABLED = getBooleanProperty("rto.index.order.master.enabled");
 			ES_TIMESTAMP_ENABLED = getBooleanProperty("rto.index.order.es.timestamp.pipeline.enabled");
+			ES_EXTENDED_ADDRESS_INDEX_ENABLED = getBooleanProperty("rto.index.extended.address.enabled");
 
 			
 			ES_TYPE = ConfigurationManager.getConfigInstance().getString("rto.index.type");
@@ -348,6 +382,12 @@ public class ElasticsearchUtil {
 				ES_TIMESTAMP_PIPELINE = ConfigurationManager.getConfigInstance().getString("rto.index.order.es.timestamp.pipeline");
 				logger.info("----->>>> ES_TIMESTAMP_PIPELINE = " + ES_TIMESTAMP_PIPELINE);
 			}
+			
+			if (ES_EXTENDED_ADDRESS_INDEX_ENABLED){
+				ES_EXTENDED_ADDRESS_INDEX = ConfigurationManager.getConfigInstance().getString("rto.index.extended.address");
+				logger.info("----->>>> ES_EXTENDED_ADDRESS_INDEX = " + ES_EXTENDED_ADDRESS_INDEX);
+				logger.info("----->>>> ES_EXTENDED_ADDRESS_INDEX = " + ES_TYPE);	
+			}			
 		}
 
 
