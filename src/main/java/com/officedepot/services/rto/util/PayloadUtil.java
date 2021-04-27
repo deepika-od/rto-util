@@ -66,7 +66,7 @@ public class PayloadUtil extends JSONUtil {
 	public String KEY_RECORD_ID = "docID";
 	public String KEY_RECORD_DOC_TYPE = "docType";
 	public String KEY_RECORD_INDEX_NAME = "indexName";
-	public String KEY_SUBMIT_ADDRESS_EXTENSION = "submitAddressExtensionFlag";
+//	public String KEY_SUBMIT_ADDRESS_EXTENSION = "submitAddressExtensionFlag";
 	
 	public String KEY_ORDERDATE = "orderDate";
 	public String KEY_ORDERDATE_TIMESTAMP = "orderDateTimestamp";
@@ -86,11 +86,11 @@ public class PayloadUtil extends JSONUtil {
 	public String KEY_ISWHOLESALE ="isWholeSale";
 	public String KEY_ISDROPSHIP ="isDropShip";
 	public String KEY_ORDERNUMBER ="orderNumber";
-	//public String KEY_EXTORDERNUMBER ="extOrdNumber";
+//	public String KEY_EXTORDERNUMBER ="extOrdNumber";
 	public String KEY_THIRD_PARTY_ORDER ="thirdPartyOrder";
 	public String KEY_IS_OFFLINE_ORDER ="isOffLineWARPOrder";
 	public String KEY_TIMESTAMP = "timestamp";
-	public String KEY_EXTENDED_ADDRESS = "extendedAddress";
+//	public String KEY_EXTENDED_ADDRESS = "extendedAddress";
 
 	 
 	public String KEY_BACKORDER_QUANTITY = "backorderQuantity";
@@ -151,15 +151,15 @@ public class PayloadUtil extends JSONUtil {
 	String KEY_ORDERDATE_TO_SENT_DURATION_FORMATTED = "orderDate2SentTFmt";
 	String KEY_DURATIONS = "durations";
 	
-	//extended address fields
-	String KEY_SHIPPING = "Shipping";
-	String KEY_SHIP_TO_ID = "ShipToID";
-	String KEY_ADDRESS_LINE_1 = "line1";
-	String KEY_ADDRESS_LINE_2 = "line2";
-	String KEY_SOLDTO = "soldTo";
-	String KEY_CONTACT_FIRST_NAME = "contactFirstName";
-	String KEY_CONTACT_LAST_NAME = "contactLastName";
-	String KEY_CONTACT_PHONE_EXT = "contactPhoneExt";
+//	//extended address fields
+//	String KEY_SHIPPING = "Shipping";
+//	String KEY_SHIP_TO_ID = "ShipToID";
+//	String KEY_ADDRESS_LINE_1 = "line1";
+//	String KEY_ADDRESS_LINE_2 = "line2";
+//	String KEY_SOLDTO = "soldTo";
+//	String KEY_CONTACT_FIRST_NAME = "contactFirstName";
+//	String KEY_CONTACT_LAST_NAME = "contactLastName";
+//	String KEY_CONTACT_PHONE_EXT = "contactPhoneExt";
 	
 	
 	
@@ -408,59 +408,62 @@ public class PayloadUtil extends JSONUtil {
 		return output;
 	}
 	
+	
+	// moved to rto-common
 	//the extendedAddress object will contain the _id, and the required elements to save will mimic the structure from rto_order
 	//create ExtendedAddressObject. instantiate it. add attributes. getJSONObject
-	public String createExtendedAddressPayload(String json) {
-		JSONObject jsonObject = new JSONObject(json);
-		
-		JSONObject outpuJsonObject = new JSONObject("{}");
-		
-		outpuJsonObject = copyObject(jsonObject, outpuJsonObject, KEY_PAYLOAD_ATTRIBUTES);
-		
-		JSONObject orderHeader = jsonObject.getJSONObject(KEY_ORDER_HEADER);	
-		JSONObject shippingObject =  orderHeader.getJSONObject(KEY_SHIPPING);
-		
-		JSONObject outputShippingObject = new JSONObject("{}"); 
-		outputShippingObject = copyAttribute(shippingObject, outputShippingObject, KEY_SHIP_TO_ID);
-		outputShippingObject = copyAttribute(shippingObject, outputShippingObject, KEY_ADDRESS_LINE_1);
-		outputShippingObject = copyAttribute(shippingObject, outputShippingObject, KEY_ADDRESS_LINE_2);
-
-		JSONObject soldToObject =  orderHeader.getJSONObject(KEY_SOLDTO);
-		
-		JSONObject outputSoldToObject = new JSONObject("{}"); 
-		outputSoldToObject = copyAttribute(soldToObject, outputSoldToObject, KEY_CONTACT_FIRST_NAME);
-		outputSoldToObject = copyAttribute(soldToObject, outputSoldToObject, KEY_CONTACT_LAST_NAME);
-		outputSoldToObject = copyAttribute(soldToObject, outputSoldToObject, KEY_CONTACT_PHONE_EXT);
-		
-		JSONObject outputHeaderObject = new JSONObject("{}"); 
-		outputHeaderObject = copyAttribute(orderHeader, outputHeaderObject, KEY_ORDER_NUMBER);
-		outputHeaderObject = copyAttribute(orderHeader, outputHeaderObject, KEY_ORDER_SUBNUMBER);
-		outputHeaderObject = copyAttribute(orderHeader, outputHeaderObject, KEY_ACCOUNTID);
-		
-		outputHeaderObject.put(KEY_SHIPPING, outputShippingObject);
-		outputHeaderObject.put(KEY_SOLDTO, outputSoldToObject);		
-		outpuJsonObject.put(KEY_ORDER_HEADER, outputHeaderObject);
-		
-		String returnJSON = outpuJsonObject.toString();
-		
-		logger.debug(CLASS_NAME + "::createExtendedAddressPayload::returnJSON = " + returnJSON);
-		
-		return returnJSON;
-	}
+//	public String createExtendedAddressPayload(String json) {
+//		JSONObject jsonObject = new JSONObject(json);
+//		
+//		JSONObject outpuJsonObject = new JSONObject("{}");
+//		
+//		outpuJsonObject = copyObject(jsonObject, outpuJsonObject, KEY_PAYLOAD_ATTRIBUTES);
+//		
+//		JSONObject orderHeader = jsonObject.getJSONObject(KEY_ORDER_HEADER);	
+//		JSONObject shippingObject =  orderHeader.getJSONObject(KEY_SHIPPING);
+//		
+//		JSONObject outputShippingObject = new JSONObject("{}"); 
+//		outputShippingObject = copyAttribute(shippingObject, outputShippingObject, KEY_SHIP_TO_ID);
+//		outputShippingObject = copyAttribute(shippingObject, outputShippingObject, KEY_ADDRESS_LINE_1);
+//		outputShippingObject = copyAttribute(shippingObject, outputShippingObject, KEY_ADDRESS_LINE_2);
+//
+//		JSONObject soldToObject =  orderHeader.getJSONObject(KEY_SOLDTO);
+//		
+//		JSONObject outputSoldToObject = new JSONObject("{}"); 
+//		outputSoldToObject = copyAttribute(soldToObject, outputSoldToObject, KEY_CONTACT_FIRST_NAME);
+//		outputSoldToObject = copyAttribute(soldToObject, outputSoldToObject, KEY_CONTACT_LAST_NAME);
+//		outputSoldToObject = copyAttribute(soldToObject, outputSoldToObject, KEY_CONTACT_PHONE_EXT);
+//		
+//		JSONObject outputHeaderObject = new JSONObject("{}"); 
+//		outputHeaderObject = copyAttribute(orderHeader, outputHeaderObject, KEY_ORDER_NUMBER);
+//		outputHeaderObject = copyAttribute(orderHeader, outputHeaderObject, KEY_ORDER_SUBNUMBER);
+//		outputHeaderObject = copyAttribute(orderHeader, outputHeaderObject, KEY_ACCOUNTID);
+//		
+//		outputHeaderObject.put(KEY_SHIPPING, outputShippingObject);
+//		outputHeaderObject.put(KEY_SOLDTO, outputSoldToObject);		
+//		outpuJsonObject.put(KEY_ORDER_HEADER, outputHeaderObject);
+//		
+//		String returnJSON = outpuJsonObject.toString();
+//		
+//		logger.debug(CLASS_NAME + "::createExtendedAddressPayload::returnJSON = " + returnJSON);
+//		
+//		return returnJSON;
+//	}
 	
-	public boolean getSubmitAddressExtension(String json) {
-		boolean submitAddressExtensionFlag = false;
-
-		JSONObject jsonObject = new JSONObject(json);
-		try {
-			submitAddressExtensionFlag = jsonObject.getJSONObject(KEY_ORDER_HEADER).getBoolean(KEY_SUBMIT_ADDRESS_EXTENSION);
-		} catch (JSONException e)
-		{
-			logger.debug("payload doesn't have submitAddressExtension ", e);
-		}
-		logger.debug("submitAddressExtensionFlag: " + submitAddressExtensionFlag);
-		return submitAddressExtensionFlag;
-	}
+	// moved to rto-common
+//	public boolean getSubmitAddressExtension(String json) {
+//		boolean submitAddressExtensionFlag = false;
+//
+//		JSONObject jsonObject = new JSONObject(json);
+//		try {
+//			submitAddressExtensionFlag = jsonObject.getJSONObject(KEY_ORDER_HEADER).getBoolean(KEY_SUBMIT_ADDRESS_EXTENSION);
+//		} catch (JSONException e)
+//		{
+//			logger.debug("payload doesn't have submitAddressExtension ", e);
+//		}
+//		logger.debug("submitAddressExtensionFlag: " + submitAddressExtensionFlag);
+//		return submitAddressExtensionFlag;
+//	}
 	
 	public boolean isNonAOPSender(String json) {
 		boolean isNonAOPSender = false;
@@ -841,42 +844,45 @@ public class PayloadUtil extends JSONUtil {
 		return DEFAULT_VALUE_KINESIS_KEY;
 	}
 	
+
+// 	moved to rto-common
+//	public boolean hasExtendedAddressIndicator(String json) {
+//		logger.debug("hasExtendedAddressIndicator: " + json);
+//		boolean hasElement = hasJsonValueIn3Levels1Array(
+//				json, 
+//				KEY_ORDER_HEADER,
+//				KEY_ADD_VALUES,
+//				KEY_EXTENDED_ADDRESS,
+//				VALUE_TRUE
+//				);
+//		logger.debug("hasExtendedAddressIndicator response: " + hasElement);
+//			
+//		return hasElement;
+//	}
 	
-	public boolean hasExtendedAddressIndicator(String json) {
-		logger.debug("hasExtendedAddressIndicator: " + json);
-		boolean hasElement = hasJsonValueIn3Levels1Array(
-				json, 
-				KEY_ORDER_HEADER,
-				KEY_ADD_VALUES,
-				KEY_EXTENDED_ADDRESS,
-				VALUE_TRUE
-				);
-		logger.debug("hasExtendedAddressIndicator response: " + hasElement);
-			
-		return hasElement;
-	}
+// moved to rto-common	
+//	//overlay the address on top of existing document
+//	public String updateOrderWithExtendedAddress(String order, String extededAddressJson) {
+//		logger.debug("updateOrderWithExtendedAddress");
+//		logger.debug("order: " + order);
+//		JSONObject jsonObject = new JSONObject(order);
+//		//soldTo
+//		
+//		//shipping
+//		
+//		return order;
+//	}
 	
-	//overlay the address on top of existing document
-	public String updateOrderWithExtendedAddress(String order, String extededAddressJson) {
-		logger.debug("updateOrderWithExtendedAddress");
-		logger.debug("order: " + order);
-		JSONObject jsonObject = new JSONObject(order);
-		//soldTo
-		
-		//shipping
-		
-		return order;
-	}
-	
-	//lookup address in extended address index
-	//overlay the address on top of existing document
-	//return the new document
-	public String enrichOrderWithExtendedAddress(String json) {
-		String id = getMasterIndexIdByValue(json);
-		
-		ElasticsearchUtil elasticUtil = new ElasticsearchUtil();
-		String extededAddressJson = elasticUtil.getAddressExtensionById(id);
-		String response = updateOrderWithExtendedAddress(json, extededAddressJson);
-		return response;
-	}
+// 	moved to rto-common	
+//	//lookup address in extended address index
+//	//overlay the address on top of existing document
+//	//return the new document
+//	public String enrichOrderWithExtendedAddress(String json) {
+//		String id = getMasterIndexIdByValue(json);
+//		
+//		ElasticsearchUtil elasticUtil = new ElasticsearchUtil();
+//		String extededAddressJson = elasticUtil.getAddressExtensionById(id);
+//		String response = updateOrderWithExtendedAddress(json, extededAddressJson);
+//		return response;
+//	}
 }

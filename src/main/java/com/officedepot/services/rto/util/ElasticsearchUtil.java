@@ -113,12 +113,13 @@ public class ElasticsearchUtil {
 		writeInboundMasterToElasticsearchIndex(json, "");
 	}
 
-	public void writeExtendedAddressToElasticsearchIndex(String json, String indexSuffix) {
-		if (ES_EXTENDED_ADDRESS_INDEX_ENABLED) {
-			logger.debug("ElasticsearchUtil::writeExtendedAddressToElasticsearchIndex ... writing record to elasticsearch: " + ES_EXTENDED_ADDRESS_INDEX + indexSuffix);
-			writeInboundMasterToElasticsearchIndexWithJSON(json, ES_EXTENDED_ADDRESS_INDEX + indexSuffix, getESTimestampPipelineName());
-		}
-	}
+// commented, moved to rto-common
+//	public void writeExtendedAddressToElasticsearchIndex(String json, String indexSuffix) {
+//		if (ES_EXTENDED_ADDRESS_INDEX_ENABLED) {
+//			logger.debug("ElasticsearchUtil::writeExtendedAddressToElasticsearchIndex ... writing record to elasticsearch: " + ES_EXTENDED_ADDRESS_INDEX + indexSuffix);
+//			writeInboundMasterToElasticsearchIndexWithJSON(json, ES_EXTENDED_ADDRESS_INDEX + indexSuffix, getESTimestampPipelineName());
+//		}
+//	}
 	
 	public void writeNoneAOPSOrderToMasterElasticsearchIndex(String json, String indexSuffix) {
 		if (ES_ORDER_MASTER_INDEX_ENABLED){
