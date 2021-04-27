@@ -258,7 +258,7 @@ public class ElasticsearchUtil {
 		
 	}
 	
-	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index, String pipelineName){
+	public void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index, String pipelineName){
 		
 		logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndexWithJSON" );	
 		writeInboundMasterToElasticsearchIndexWithJSON(json, index, pipelineName, false);

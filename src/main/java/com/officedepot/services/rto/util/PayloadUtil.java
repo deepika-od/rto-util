@@ -386,7 +386,7 @@ public class PayloadUtil extends JSONUtil {
 		return jsonObject.toString();
 	}
 	
-	private JSONObject copyObject(JSONObject input, JSONObject output, String objectName) {		
+	public JSONObject copyObject(JSONObject input, JSONObject output, String objectName) {		
 		JSONObject jsonObject = null;
 		try {
 			jsonObject = input.getJSONObject(objectName);
@@ -397,7 +397,7 @@ public class PayloadUtil extends JSONUtil {
 		return output;
 	}
 	
-	private JSONObject copyAttribute(JSONObject input, JSONObject output, String objectName) {		
+	public JSONObject copyAttribute(JSONObject input, JSONObject output, String objectName) {		
 		String name = null;
 		try {
 			name = input.getString(objectName);
