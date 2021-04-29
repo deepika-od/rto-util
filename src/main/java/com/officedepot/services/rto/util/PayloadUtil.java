@@ -386,28 +386,6 @@ public class PayloadUtil extends JSONUtil {
 		return jsonObject.toString();
 	}
 	
-	public JSONObject copyObject(JSONObject input, JSONObject output, String objectName) {		
-		JSONObject jsonObject = null;
-		try {
-			jsonObject = input.getJSONObject(objectName);
-			output.put(objectName, jsonObject);
-		} catch (JSONException e) {
-			logger.info(objectName + " attribute missing from the payload, " + e.getMessage());
-		}
-		return output;
-	}
-	
-	public JSONObject copyAttribute(JSONObject input, JSONObject output, String objectName) {		
-		String name = null;
-		try {
-			name = input.getString(objectName);
-			output.put(objectName, name);
-		} catch (JSONException e) {
-			logger.info(objectName + " attribute missing from the payload, " + e.getMessage());
-		}
-		return output;
-	}
-	
 	
 	// moved to rto-common
 	//the extendedAddress object will contain the _id, and the required elements to save will mimic the structure from rto_order

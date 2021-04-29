@@ -2,6 +2,7 @@ package com.officedepot.services.rto.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -319,6 +320,28 @@ public class JSONUtil {
 
 //         logger.debug(logMessage + ret); 
 		return ret;
+	}
+	
+	public JSONObject copyObject(JSONObject input, JSONObject output, String objectName) {		
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = input.getJSONObject(objectName);
+			output.put(objectName, jsonObject);
+		} catch (JSONException e) {
+			logger.info(objectName + " attribute missing from the payload, " + e.getMessage());
+		}
+		return output;
+	}
+	
+	public JSONObject copyAttribute(JSONObject input, JSONObject output, String objectName) {		
+		String name = null;
+		try {
+			name = input.getString(objectName);
+			output.put(objectName, name);
+		} catch (JSONException e) {
+			logger.info(objectName + " attribute missing from the payload, " + e.getMessage());
+		}
+		return output;
 	}
 	
 

@@ -144,12 +144,13 @@ public class ElasticsearchUtil {
 		}
 		return ret;
 	}
-	
-	public String getAddressExtensionById(String id ) {
-		String index = ES_EXTENDED_ADDRESS_INDEX;
-		String type = ES_TYPE;
-		return getDocAsSource(index, type, id);
-	}
+
+	// moved to rto-common
+//	public String getAddressExtensionById(String id ) {
+//		String index = ES_EXTENDED_ADDRESS_INDEX;
+//		String type = ES_TYPE;
+//		return getDocAsSource(index, type, id);
+//	}
 	
 	public String getDocAsSource(String index, String type, String id ) {
 		ElasticSearchHighLevelDAOImpl elasticSearchHighLevelDAOImpl = new ElasticSearchHighLevelDAOImpl();
