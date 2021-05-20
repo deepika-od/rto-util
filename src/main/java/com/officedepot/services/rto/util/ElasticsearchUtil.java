@@ -112,14 +112,6 @@ public class ElasticsearchUtil {
 	public void writeInboundMasterToElasticsearchIndex(String json) {
 		writeInboundMasterToElasticsearchIndex(json, "");
 	}
-
-// commented, moved to rto-common
-//	public void writeExtendedAddressToElasticsearchIndex(String json, String indexSuffix) {
-//		if (ES_EXTENDED_ADDRESS_INDEX_ENABLED) {
-//			logger.debug("ElasticsearchUtil::writeExtendedAddressToElasticsearchIndex ... writing record to elasticsearch: " + ES_EXTENDED_ADDRESS_INDEX + indexSuffix);
-//			writeInboundMasterToElasticsearchIndexWithJSON(json, ES_EXTENDED_ADDRESS_INDEX + indexSuffix, getESTimestampPipelineName());
-//		}
-//	}
 	
 	public void writeNoneAOPSOrderToMasterElasticsearchIndex(String json, String indexSuffix) {
 		if (ES_ORDER_MASTER_INDEX_ENABLED){
@@ -144,13 +136,6 @@ public class ElasticsearchUtil {
 		}
 		return ret;
 	}
-
-	// moved to rto-common
-//	public String getAddressExtensionById(String id ) {
-//		String index = ES_EXTENDED_ADDRESS_INDEX;
-//		String type = ES_TYPE;
-//		return getDocAsSource(index, type, id);
-//	}
 	
 	public String getDocAsSource(String index, String type, String id ) {
 		ElasticSearchHighLevelDAOImpl elasticSearchHighLevelDAOImpl = new ElasticSearchHighLevelDAOImpl();
@@ -173,7 +158,7 @@ public class ElasticsearchUtil {
 	
 	public void writeInboundToElasticsearchIndex(String json, String indexSuffix){
 		if (ES_INDEX_ENABLED){
-			//logger.debug("ElasticsearchUtil::writeInboundToElasticsearchIndex ... writing record to elasticsearch: " + ES_INDEX + indexSuffix);		
+			logger.debug("ElasticsearchUtil::writeInboundToElasticsearchIndex ... writing record to elasticsearch: " + ES_INDEX + indexSuffix);		
 			writeToElasticsearchIndexWithJSON(json, ES_INDEX + indexSuffix);
 		}
 	}
@@ -203,9 +188,6 @@ public class ElasticsearchUtil {
 				
 			} catch (Exception e){
 				logger.error("ElasticsearchUtil::writeErrorToElasticsearchIndex ... #1 FAILED WRITING ERROR INDEX in elasticsearch: " + ES_ERROR_INDEX);			
-			
-				//logger.error("ElasticsearchUtil::writeErrorToElasticsearchIndex ... #1 FAILED WRITING ERROR INDEX in elasticsearch stack: ", e);			
-				
 			}		
 		}
 	}
@@ -228,8 +210,6 @@ public class ElasticsearchUtil {
 				writeToElasticsearchIndexWithJSON(errorJSON, ES_ERROR_INDEX);
 			} catch (Exception e){
 				logger.error("ElasticsearchUtil::writeErrorToElasticsearchIndex ... #2 FAILED WRITING ERROR INDEX in elasticsearch: " + ES_ERROR_INDEX);			
-			
-				//logger.error("ElasticsearchUtil::writeErrorToElasticsearchIndex ... #2 FAILED WRITING ERROR INDEX in elasticsearch stack: ", e);	
 			}		
 		}
 	}
@@ -269,8 +249,6 @@ public class ElasticsearchUtil {
 	
 	private void writeToElasticsearchIndex(String payload, String index, String type){
 
-		//logger.debug("ElasticsearchUtil::writeToIndex::writing to index: " + index + ", type: " + type + ", payload: " + payload);
-		
 		ElasticSearchHighLevelDAOImpl elasticSearchHighLevelDAOImpl = new ElasticSearchHighLevelDAOImpl();
 		try{
 			
@@ -280,7 +258,6 @@ public class ElasticsearchUtil {
 			logger.error("ElasticsearchUtil::writeToIndex::EXCEPTION: " + e.getMessage(), e);
 		}
 
-		//logger.debug("ElasticsearchUtil::writeToIndex: AFTER writing to index... ");
 	}
 
 	
@@ -303,7 +280,6 @@ public class ElasticsearchUtil {
 			logger.error("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::FAILED writing to index " + index + " + " + payload);
 			logger.error("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex::EXCEPTION: " + e.getMessage(), e);
 		}
-//
 		logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex: AFTER writing to index... ");
 	}
 	
