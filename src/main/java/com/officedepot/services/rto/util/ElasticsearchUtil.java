@@ -120,6 +120,7 @@ public class ElasticsearchUtil {
 		}				
 	}
 	public void writeInboundMasterToElasticsearchIndex(String json, String indexSuffix) {
+		logger.info("writeInboundMasterToElasticsearchIndex {}", json);
 
 		if (ES_ORDER_MASTER_INDEX_ENABLED){
 			logger.debug("ElasticsearchUtil::writeInboundMasterToElasticsearchIndex ... writing record to elasticsearch: " + ES_ORDER_MASTER_INDEX + indexSuffix);		

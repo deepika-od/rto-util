@@ -293,32 +293,31 @@ public class JSONUtil {
 		
 		boolean ret = false;
 		JSONObject jsonObject = new JSONObject(json);
-		String logMessage = "PayloadUtil::hasJsonValueIn3Levels1Array: ";
-
-		//logger.debug(logMessage); 
-
-		if (jsonObject.has(levelKey)){
-			JSONObject jsonObject2  = jsonObject.getJSONObject(levelKey);
-			
-			if (jsonObject2.has(levelKey2)){
-				JSONObject jsonObject3  = jsonObject2.getJSONObject(levelKey2);
-				JSONArray arrayItems = jsonObject3.getJSONArray(levelKey3);
-
-				for (int i = 0; i < arrayItems.length(); i++) {
-					String arrValue = (String) arrayItems.get(i);
-				   // logger.debug(logMessage + "arrValue: " + arrValue);
-				    
-				    if (!StringUtils.isEmpty(arrValue) && arrValue.equalsIgnoreCase(value)) {
-				    	ret = true;
-				    	i = 9999;
-				    	//logger.debug(logMessage + "MATCH: " + arrValue);
-				    }
-				}
+		try {
+			if (jsonObject.has(levelKey)){
+				JSONObject jsonObject2  = jsonObject.getJSONObject(levelKey);
 				
-			}
-		}
+				if (jsonObject2.has(levelKey2)){
+					JSONObject jsonObject3  = jsonObject2.getJSONObject(levelKey2);
+					JSONArray arrayItems = jsonObject3.getJSONArray(levelKey3);
 
-//         logger.debug(logMessage + ret); 
+					for (int i = 0; i < arrayItems.length(); i++) {
+						String arrValue = (String) arrayItems.get(i);
+					   // logger.debug(logMessage + "arrValue: " + arrValue);
+					    
+					    if (!StringUtils.isEmpty(arrValue) && arrValue.equalsIgnoreCase(value)) {
+					    	ret = true;
+					    	i = 9999;
+					    	//logger.debug(logMessage + "MATCH: " + arrValue);
+					    }
+					}
+					
+				}
+			}
+			
+		} catch(Exception ex) {
+			logger.debug("payloadUtil.hasJsonValueIn3Levels1Array doesn't have extendedAddress field ", ex);
+		}
 		return ret;
 	}
 	
