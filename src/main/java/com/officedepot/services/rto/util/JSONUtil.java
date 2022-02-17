@@ -2,6 +2,7 @@ package com.officedepot.services.rto.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -292,33 +293,54 @@ public class JSONUtil {
 		
 		boolean ret = false;
 		JSONObject jsonObject = new JSONObject(json);
-		String logMessage = "PayloadUtil::hasJsonValueIn3Levels1Array: ";
-
-		//logger.debug(logMessage); 
-
-		if (jsonObject.has(levelKey)){
-			JSONObject jsonObject2  = jsonObject.getJSONObject(levelKey);
-			
-			if (jsonObject2.has(levelKey2)){
-				JSONObject jsonObject3  = jsonObject2.getJSONObject(levelKey2);
-				JSONArray arrayItems = jsonObject3.getJSONArray(levelKey3);
-
-				for (int i = 0; i < arrayItems.length(); i++) {
-					String arrValue = (String) arrayItems.get(i);
-				   // logger.debug(logMessage + "arrValue: " + arrValue);
-				    
-				    if (!StringUtils.isEmpty(arrValue) && arrValue.equalsIgnoreCase(value)) {
-				    	ret = true;
-				    	i = 9999;
-				    	//logger.debug(logMessage + "MATCH: " + arrValue);
-				    }
-				}
+		try {
+			if (jsonObject.has(levelKey)){
+				JSONObject jsonObject2  = jsonObject.getJSONObject(levelKey);
 				
-			}
-		}
+				if (jsonObject2.has(levelKey2)){
+					JSONObject jsonObject3  = jsonObject2.getJSONObject(levelKey2);
+					JSONArray arrayItems = jsonObject3.getJSONArray(levelKey3);
 
-//         logger.debug(logMessage + ret); 
+					for (int i = 0; i < arrayItems.length(); i++) {
+						String arrValue = (String) arrayItems.get(i);
+					   // logger.debug(logMessage + "arrValue: " + arrValue);
+					    
+					    if (!StringUtils.isEmpty(arrValue) && arrValue.equalsIgnoreCase(value)) {
+					    	ret = true;
+					    	i = 9999;
+					    	//logger.debug(logMessage + "MATCH: " + arrValue);
+					    }
+					}
+					
+				}
+			}
+			
+		} catch(Exception ex) {
+			logger.debug("payloadUtil.hasJsonValueIn3Levels1Array doesn't have extendedAddress field ", ex);
+		}
 		return ret;
+	}
+	
+	public JSONObject copyObject(JSONObject input, JSONObject output, String objectName) {		
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = input.getJSONObject(objectName);
+			output.put(objectName, jsonObject);
+		} catch (JSONException e) {
+			logger.info(objectName + " attribute missing from the payload, " + e.getMessage());
+		}
+		return output;
+	}
+	
+	public JSONObject copyAttribute(JSONObject input, JSONObject output, String objectName) {		
+		String name = null;
+		try {
+			name = input.getString(objectName);
+			output.put(objectName, name);
+		} catch (JSONException e) {
+			logger.info(objectName + " attribute missing from the payload, " + e.getMessage());
+		}
+		return output;
 	}
 	
 

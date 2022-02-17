@@ -13,8 +13,6 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -87,7 +85,6 @@ public class PayloadUtil extends JSONUtil {
 	public String KEY_ISWHOLESALE ="isWholeSale";
 	public String KEY_ISDROPSHIP ="isDropShip";
 	public String KEY_ORDERNUMBER ="orderNumber";
-	//public String KEY_EXTORDERNUMBER ="extOrdNumber";
 	public String KEY_THIRD_PARTY_ORDER ="thirdPartyOrder";
 	public String KEY_IS_OFFLINE_ORDER ="isOffLineWARPOrder";
 	public String KEY_TIMESTAMP = "timestamp";
@@ -104,9 +101,10 @@ public class PayloadUtil extends JSONUtil {
 	
 	// VALUES
 	public String VALUE_SENDER_DTS = "dts";
+	public String VALUE_SENDER_AOPS = "aops";
 	public String VALUE_TECHSALESNC = "TECHSALENC";
 	public String VALUE_ELYNXX		= "ELYNXX";
-	
+	public String VALUE_TRUE		= "true";
 	
 	public String VALUE_KEY_FORCESENT_SCM ="scm";
 	public String VALUE_EVENT_FORCESENT_BYPASS_EVENTS = "bypass-events";
@@ -115,6 +113,7 @@ public class PayloadUtil extends JSONUtil {
 	public String VALUE_DEADLETTERRETRYSOURCE = "rto-admin-service";
 	public String VALUE_PAYLOAD_ATTRIBUTES_SOURCE_POS = "pos";
 	public String VALUE_PAYLOAD_ATTRIBUTES_SOURCE_WARP = "warp";
+	public String VALUE_PAYLOAD_ATTRIBUTES_SOURCE_AOPS = "aops";
 		
 	public String VALUE_EXTERNAL = "external";
 	
@@ -146,7 +145,7 @@ public class PayloadUtil extends JSONUtil {
 	String KEY_SENT_TO_PROCESS_DURATION_FORMATTED = "sentT2ProcessTFmt";
 	String KEY_ORDERDATE_TO_SENT_DURATION = "orderDate2SentT";
 	String KEY_ORDERDATE_TO_SENT_DURATION_FORMATTED = "orderDate2SentTFmt";
-	String KEY_DURATIONS = "kronos";
+	String KEY_DURATIONS = "durations";
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd.HH.mm:ss.SSSSSS";
 	public final String BAD_DATE_SUBSTITUTE = "9999-01-01";
@@ -371,7 +370,24 @@ public class PayloadUtil extends JSONUtil {
 		return jsonObject.toString();
 	}
 	
-	
+	public boolean isNonAOPSender(String json) {
+		boolean isNonAOPSender = false;
+
+		JSONObject jsonObject = new JSONObject(json);
+		try {
+			String sender = jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).getString(KEY_SENDER);
+			if (sender != null) {
+				sender=sender.trim();
+				isNonAOPSender = !(sender.equalsIgnoreCase(VALUE_SENDER_AOPS));
+			}
+		} catch (JSONException e)
+		{
+			logger.debug("payload doesn't have payloadAttributes.sender ", e);
+		}
+		logger.debug("isNonAOPSender: " + isNonAOPSender);
+		return isNonAOPSender;
+	}
+
 	public String createPayloadForDestinationKey(String json, String destinationKey){
 		
 		String returnJSON = json;
@@ -689,14 +705,6 @@ public class PayloadUtil extends JSONUtil {
 		
 		return returnValue;
 	}
-//	**** USE getMasterIndexIdByValue instead ****
-//	public String getMasterIndexId(String json){
-//
-//		String id = getMasterIndexIdByOrderField(json, KEY_ORDER_NUMBER, getOrderSource(json));
-//		
-//		//logger.debug("getMasterIndexId: " + id); 
-//		return id;
-//	}
 	
 	public String getSentTimestamp(String json) {
 		JSONObject jsonObject = new JSONObject(json);

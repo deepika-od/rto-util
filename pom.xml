@@ -9,7 +9,7 @@
 	
 	<groupId>com.officedepot.rto.util</groupId>
 	<artifactId>rto-util</artifactId>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
    
 	<properties>
@@ -42,7 +42,7 @@
 		<dependency>
 		  <groupId>com.officedepot.services.connectors</groupId>
 		  <artifactId>elasticsearch-connector</artifactId>
-		  <version>7.6.2-SNAPSHOT</version>
+		  <version>7.6.2.5-SNAPSHOT</version>
 		</dependency>  
 
 		<dependency>
