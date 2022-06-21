@@ -65,6 +65,7 @@ public class ElasticsearchUtil {
 				
 				writeToElasticsearchIndexWithJSON(deadJSON, ES_DEADLETTER_INDEX);
 			} catch (Exception e){
+				logger.error(CLASS_NAME + "writeDeadLetterToElasticsearchIndex ... FAILED WRITING DEADLETTER INDEX in elasticsearch: " + e);
 				logger.error(CLASS_NAME + "writeDeadLetterToElasticsearchIndex ... FAILED WRITING DEADLETTER INDEX in elasticsearch: " + ES_DEADLETTER_INDEX);			
 			}			
 		}
