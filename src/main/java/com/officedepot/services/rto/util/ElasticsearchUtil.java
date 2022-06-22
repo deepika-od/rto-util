@@ -49,7 +49,7 @@ public class ElasticsearchUtil {
 		
 	public void writeDeadLetterToElasticsearchIndex(String msg, String json){
 		
-		logger.error(CLASS_NAME + "writeDeadLetterToElasticsearchIndex" + METHOD_MESSAGE + ES_DEADLETTER_INDEX);
+		logger.debug(CLASS_NAME + "writeDeadLetterToElasticsearchIndex" + METHOD_MESSAGE + ES_DEADLETTER_INDEX);
 		PayloadUtil payloadUtil = new PayloadUtil();
 		
 		if ((ES_DEADLETTER_INDEX_ENABLED) 
