@@ -290,7 +290,7 @@ public class ElasticsearchUtil {
 		try {
 			result = ConfigurationManager.getConfigInstance().getBoolean(pName);
 		} catch (Exception e) {
-			logger.error("Missing property " + pName + " from the configuration file");
+			logger.info("Missing property " + pName + " from the configuration file");
 		}
 		return result;
 	}
