@@ -180,7 +180,7 @@ public class ElasticsearchUtil {
 	}
 	
 	public void writeErrorToElasticsearchIndex(String errMessage){
-		logger.error("#1 ElasticsearchUtil::writeErrorToElasticsearchIndex ... writing ERROR to elasticsearch INDEX: " + ES_ERROR_INDEX);
+		logger.debug("#1 ElasticsearchUtil::writeErrorToElasticsearchIndex ... writing ERROR to elasticsearch INDEX: " + ES_ERROR_INDEX);
 		if (ES_ERROR_INDEX_ENABLED){
 			try {
 
@@ -196,7 +196,7 @@ public class ElasticsearchUtil {
 	
 	public void writeErrorToElasticsearchIndex(String msg, String json){
 		
-		logger.error("#2 ElasticsearchUtil::writeErrorToElasticsearchIndex ... writing ERROR to elasticsearch INDEX in Payload: " + ES_ERROR_INDEX);
+		logger.debug("#2 ElasticsearchUtil::writeErrorToElasticsearchIndex ... writing ERROR to elasticsearch INDEX in Payload: " + ES_ERROR_INDEX);
 		
 		if (ES_ERROR_INDEX_ENABLED){
 			
