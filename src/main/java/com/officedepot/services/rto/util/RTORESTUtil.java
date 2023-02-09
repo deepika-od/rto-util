@@ -183,6 +183,12 @@ public class RTORESTUtil  {
 			clientProperties.put(ClientProperty.CONNECTION_TIMEOUT, connectionTimeout);
 		}
 
+		LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties map: " + clientProperties);
+		if(clientProperties != null) {
+			LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties socket timeout: " + clientProperties.get(ClientProperty.SOCKET_TIMEOUT));
+			LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties connection timeout: " + clientProperties.get(ClientProperty.CONNECTION_TIMEOUT));
+		}
+
 		return clientProperties;
 	}
  
