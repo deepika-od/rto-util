@@ -21,8 +21,8 @@ import com.officedepot.servicecore.exceptions.CoreServiceException;
 import com.officedepot.servicecore.exceptions.DataProviderException;
 
 public class RTORESTUtil  {
-	private static final String EVENT_P44 = "p44";
-	private static final String EVENT_COOL = "cool";
+	private static final String EVENT_P44 = "TRACS_P44_EVENT";
+	private static final String EVENT_COOL = "COOL_EVENT_FINISHED";
 	protected final static Logger LOGGER = LoggerFactory.getLogger(RTORESTUtil.class);
 	
 	private String apiUrl = ConfigurationManager.getConfigInstance().getString("rto.baseuri");
@@ -80,14 +80,15 @@ public class RTORESTUtil  {
 		Map<ClientProperty, String> clientProperties = null;
 		// Populating client connection properties only for "cool", "p44" events (not to affect other events)
 		if(EVENT_COOL.equals(event) || EVENT_P44.equals(event)) {
+			LOGGER.debug(logMessage + "getClientConnectionProperties for: " + event);
 			clientProperties = getClientConnectionProperties();
 		}
 
     	startTime = new Date().getTime();
 
     	
-    	LOGGER.debug(logMessage + "request json payload: " + json + "::url:" + apiUrl);
-    	LOGGER.debug(logMessage + "request url: " + "::url:" + apiUrl);
+    	LOGGER.debug(logMessage + "REQUEST JSON PAYLOAD: " + json + "::url:" + apiUrl);
+    	LOGGER.debug(logMessage + "REQUEST URL: " + "::url:" + apiUrl);
     	
 	    try{
 	    	if(withBasicAuth){
