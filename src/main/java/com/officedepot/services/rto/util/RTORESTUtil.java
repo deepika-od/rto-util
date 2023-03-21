@@ -167,9 +167,13 @@ public class RTORESTUtil  {
 		AbstractConfiguration config = ConfigurationManager.getConfigInstance();
 		String socketTimeout = config.getString("httpclient.socketTimeout");
 		String connectionTimeout = config.getString("httpclient.connectionTimeout");
+		String keepAlive = config.getString("httpclient.enableKeepAlive");
+		String keepAliveTimeout = config.getString("httpclient.keepAliveTimeout");
 
 		LOGGER.info(CLASS_NAME + "getClientConnectionProperties::socketTimeout: " + socketTimeout);
 		LOGGER.info(CLASS_NAME + "getClientConnectionProperties::connectionTimeout: " + connectionTimeout);
+		LOGGER.info(CLASS_NAME + "getClientConnectionProperties::enableKeepAlive: " + keepAlive);
+		LOGGER.info(CLASS_NAME + "getClientConnectionProperties::keepAliveTimeout: " + keepAliveTimeout);
 		// Added client connection properties
 		Map<ClientProperty, String> clientProperties = null;
 		if(socketTimeout != null) {
@@ -184,10 +188,26 @@ public class RTORESTUtil  {
 			clientProperties.put(ClientProperty.CONNECTION_TIMEOUT, connectionTimeout);
 		}
 
+		if(keepAlive != null) {
+			if(clientProperties != null){
+				clientProperties = new HashMap<>();
+			}
+			clientProperties.put(ClientProperty.KEEP_ALIVE, keepAlive);
+		}
+
+		if(keepAliveTimeout != null) {
+			if(clientProperties != null){
+				clientProperties = new HashMap<>();
+			}
+			clientProperties.put(ClientProperty.KEEP_ALIVE_TIMEOUT, keepAliveTimeout);
+		}
+
 		LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties map: " + clientProperties);
 		if(clientProperties != null) {
 			LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties socket timeout: " + clientProperties.get(ClientProperty.SOCKET_TIMEOUT));
 			LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties connection timeout: " + clientProperties.get(ClientProperty.CONNECTION_TIMEOUT));
+			LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties keepAlive: " + clientProperties.get(ClientProperty.KEEP_ALIVE));
+			LOGGER.info(CLASS_NAME + "getClientConnectionProperties::clientProperties keepAlive timeout: " + clientProperties.get(ClientProperty.KEEP_ALIVE_TIMEOUT));
 		}
 
 		return clientProperties;
