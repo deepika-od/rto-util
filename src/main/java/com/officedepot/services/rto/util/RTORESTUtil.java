@@ -182,21 +182,21 @@ public class RTORESTUtil  {
 		}
 
 		if(connectionTimeout != null) {
-			if(clientProperties != null){
+			if(clientProperties == null){
 				clientProperties = new HashMap<>();
 			}
 			clientProperties.put(ClientProperty.CONNECTION_TIMEOUT, connectionTimeout);
 		}
 
 		if(keepAlive != null) {
-			if(clientProperties != null){
+			if(clientProperties == null){
 				clientProperties = new HashMap<>();
 			}
 			clientProperties.put(ClientProperty.KEEP_ALIVE, keepAlive);
 		}
 
 		if(keepAliveTimeout != null) {
-			if(clientProperties != null){
+			if(clientProperties == null){
 				clientProperties = new HashMap<>();
 			}
 			clientProperties.put(ClientProperty.KEEP_ALIVE_TIMEOUT, keepAliveTimeout);
