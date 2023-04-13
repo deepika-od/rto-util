@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 import com.netflix.config.ConfigurationManager;
 import com.officedepot.services.search.elasticsearch.ElasticSearchHighLevelDAOImpl;
 
+import java.time.LocalDateTime;
+import java.util.TimeZone;
+
 public class ElasticsearchUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(ElasticsearchUtil.class);
@@ -227,8 +230,10 @@ public class ElasticsearchUtil {
 	private void writeToElasticsearchIndexWithJSON(String json, String index){
 		
 		String type = ES_TYPE;
-		json = new PayloadUtil().addProcessTimeStampInJSON(json);
-		json = new PayloadUtil().addProcessTimeStampTZInJSON(json);
+		TimeZone.setDefault(TimeZone.getTimeZone("EST"));
+		LocalDateTime localDateTime = LocalDateTime.now();
+		json = new PayloadUtil().addProcessTimeStampInJSON(json, localDateTime);
+		json = new PayloadUtil().addProcessTimeStampTZInJSON(json, localDateTime);
 		writeToElasticsearchIndex( json,  index,  type);
 		
 	}
@@ -236,8 +241,10 @@ public class ElasticsearchUtil {
 	private void writeInboundMasterToElasticsearchIndexWithJSON(String json, String index, String pipelineName, boolean createFlag){
 		
 		String type = ES_TYPE;
-		json = new PayloadUtil().addProcessTimeStampInJSON(json);
-		json = new PayloadUtil().addProcessTimeStampTZInJSON(json);
+		TimeZone.setDefault(TimeZone.getTimeZone("EST"));
+		LocalDateTime localDateTime = LocalDateTime.now();
+		json = new PayloadUtil().addProcessTimeStampInJSON(json, localDateTime);
+		json = new PayloadUtil().addProcessTimeStampTZInJSON(json, localDateTime);
 		writeInboundMasterToElasticsearchIndex( json,  index,  type, pipelineName, createFlag);
 		
 	}

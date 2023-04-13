@@ -2,6 +2,7 @@ package com.officedepot.services.rto.util;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -239,13 +240,9 @@ public class PayloadUtil extends JSONUtil {
 	}
 	
 	
-	public String addProcessTimeStampInJSON(String json){
+	public String addProcessTimeStampInJSON(final String json, final LocalDateTime localDateTime){
 		JSONObject jsonObject = new JSONObject(json);
-		
-		TimeZone.setDefault(TimeZone.getTimeZone("EST"));
-
-		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_TIMESTAMP, new SimpleDateFormat(DATE_FORMAT).format(new Date()));
-
+		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_TIMESTAMP, localDateTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
 		return jsonObject.toString();
 	}	
 
@@ -331,10 +328,10 @@ public class PayloadUtil extends JSONUtil {
 	}	
 	
 	
-	public String addProcessTimeStampTZInJSON(String json){
+	public String addProcessTimeStampTZInJSON(final String json, final LocalDateTime localDateTime){
 		JSONObject jsonObject = new JSONObject(json);
-		
-		ZonedDateTime zoneDateTime = ZonedDateTime.now();
+
+		ZonedDateTime zoneDateTime =  ZonedDateTime.of(localDateTime, TimeZone.getDefault().toZoneId());
         String processTimeTZ = zoneDateTime.format(DateTimeFormatter.ofPattern(ZONED_DATE_PATTERN));
         
 		jsonObject.getJSONObject(KEY_PAYLOAD_ATTRIBUTES).put(KEY_PROCESS_TIMESTAMPTZ, processTimeTZ);
