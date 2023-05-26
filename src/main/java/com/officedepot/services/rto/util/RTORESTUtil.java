@@ -23,6 +23,7 @@ import com.officedepot.servicecore.exceptions.DataProviderException;
 public class RTORESTUtil  {
 	private static final String EVENT_P44 = "TRACS_P44_EVENT";
 	private static final String EVENT_COOL = "COOL_EVENT_FINISHED";
+	private static final String EVENT_DATAWAREHOUSE = "DATAWAREHOUSE_EVENT";
 	protected final static Logger LOGGER = LoggerFactory.getLogger(RTORESTUtil.class);
 	
 	private String apiUrl = ConfigurationManager.getConfigInstance().getString("rto.baseuri");
@@ -79,7 +80,7 @@ public class RTORESTUtil  {
 
 		Map<ClientProperty, String> clientProperties = null;
 		// Populating client connection properties only for "cool", "p44" events (not to affect other events)
-		if(EVENT_COOL.equals(event) || EVENT_P44.equals(event)) {
+		if(EVENT_COOL.equals(event) || EVENT_P44.equals(event) || EVENT_DATAWAREHOUSE.equals(event)) {
 			LOGGER.debug(logMessage + "getClientConnectionProperties for: " + event);
 			clientProperties = getClientConnectionProperties();
 		}
