@@ -9,7 +9,7 @@
 	
 	<groupId>com.officedepot.rto.util</groupId>
 	<artifactId>rto-util</artifactId>
-	<version>0.1.13-SNAPSHOT</version>
+	<version>0.1.15-SNAPSHOT</version>
 	<packaging>jar</packaging>
    
 	<properties>
