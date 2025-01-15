@@ -105,6 +105,7 @@ public class PayloadUtil extends JSONUtil {
 	public String VALUE_SENDER_AOPS = "aops";
 	public String VALUE_TECHSALESNC = "TECHSALENC";
 	public String VALUE_ELYNXX		= "ELYNXX";
+	public String VALUE_CHANNELNC	= "CHANNELNC";
 	public String VALUE_TRUE		= "true";
 	
 	public String VALUE_KEY_FORCESENT_SCM ="scm";
