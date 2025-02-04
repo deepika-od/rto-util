@@ -7,7 +7,7 @@ buildDeployService {
     deployLocations = "aws"
     skipDockerBuild = "true"
     skipAllDeploy = "true"
-snyk = ["org": "cool", "environment":"backend", "devBranch":"dev" ,"block":"false"]
+	snyk = ["org": "cool", "environment":"backend", "devBranch":"dev" ,"block":"false"]
   	envs = [
 	] 
 	metaData = [ 
